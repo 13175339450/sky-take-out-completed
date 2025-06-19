@@ -3,3 +3,33 @@ server:
   servlet:
     context-path: / #项目根路径
 
+# 日志配置
+logging:
+  # 配置各包路径的日志级别
+  level:
+    com:
+      sky:
+        # Mapper层(数据访问层)使用DEBUG级别，会输出SQL语句和参数等详细信息
+        mapper: debug
+        # Service层(业务逻辑层)使用INFO级别，输出关键业务操作信息
+        service: info
+        # Controller层(控制器层)使用INFO级别，输出请求处理的关键信息
+        controller: info
+
+spring:
+  profiles:
+    active: dev #动态激活的yaml配置
+  main:
+    allow-circular-references: true
+  #配置连接池信息
+  datasource:
+    druid:
+      driver-class-name: ${hxl.datasource.driver-class-name}
+      username: ${hxl.datasource.username}
+      password: ${hxl.datasource.password}
+      url: jdbc:mysql://${hxl.datasource.host}:${hxl.datasource.host}/${hxl.datasource.database}?${hxl.datasource.serverTimezone}&${hxl.datasource.useUnicode}&${hxl.datasource.characterEncoding}&${hxl.datasource.zeroDateTimeBehavior}&${hxl.datasource.useSSL}&${hxl.datasource.allowPublicKeyRetrieval}
+
+  #指定单个文件上传的大小
+  servlet:
+    multipart:
+      max-file-size: 2MB

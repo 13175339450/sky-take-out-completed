@@ -1,0 +1,15 @@
+hxl:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    #其余配置分散
+    host: localhost
+    port: 3306
+    database: sky_take_out
+    serverTimezone: Asia/Shanghai
+    useUnicode: true
+    characterEncoding: utf-8
+    zeroDateTimeBehavior: convertToNull
+    useSSL: false
+    allowPublicKeyRetrieval: true

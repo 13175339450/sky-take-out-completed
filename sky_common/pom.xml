@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.hxl</groupId>
+        <artifactId>sky_take_out</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>sky_common</artifactId>
+
+    <!-- 项目依赖配置 -->
+    <dependencies>
+        <!-- Lombok - 通过注解减少Java Bean样板代码 -->
+        <!-- 编译时自动生成Getter/Setter/Constructors等，需在IDE安装插件 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- FastJSON - 阿里巴巴JSON处理库，用于JSON与Java对象互转 -->
+        <!-- 注意：存在安全漏洞风险，建议升级到最新版本(2.0.24+)或改用Jackson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <!-- Commons Lang - Apache基础工具库，提供字符串处理、日期工具等 -->
+        <!-- 注意：此为旧版本(2.x)，建议使用commons-lang3(3.x)版本 -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <!-- Spring Boot JSON - 包含Jackson及相关JSON处理库 -->
+        <!-- 提供默认的JSON序列化/反序列化支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <!-- JJWT - JWT(Java Web Token)实现库，用于生成和验证JSON Web Token -->
+        <!-- 注意：此为旧版本(0.9.1)，建议升级到io.jsonwebtoken:jjwt-api + jjwt-impl -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
+
+        <!-- Spring Boot配置处理器 - 生成元数据支持配置属性类 -->
+        <!-- 使IDE能自动提示application.yml中的自定义配置项 -->
+        <!-- optional=true表示此依赖仅在编译时需要，不传递到运行时 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 阿里云OSS SDK - 用于访问阿里云对象存储服务 -->
+        <!-- 内部依赖HttpClient，提供HTTP客户端功能 -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
+
+        <!-- JAXB API - Java XML绑定，用于XML与Java对象互转 -->
+        <!-- Java 9+环境需要显式引入，Java 11+还需添加javax.activation依赖 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <!-- 微信支付V3 SDK - 基于Apache HttpClient的微信支付API客户端 -->
+        <!-- 提供微信支付签名、验签及API调用功能 -->
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-apache-httpclient</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

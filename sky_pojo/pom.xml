@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.hxl</groupId>
+        <artifactId>sky_take_out</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>sky_pojo</artifactId>
+
+    <!-- 项目依赖配置 -->
+    <dependencies>
+        <!-- Lombok - 通过注解减少Java Bean样板代码（如Getter/Setter/Constructors） -->
+        <!-- 编译时自动生成代码，无需手动编写，需在IDE安装插件支持 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- Jackson Databind - JSON处理库，Spring Boot默认使用 -->
+        <!-- 手动指定版本（非推荐）：2.9.2是特定版本，可能用于兼容旧项目或解决特定问题 -->
+        <!-- 建议使用Spring Boot依赖管理的版本，避免版本冲突 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <!-- <version>2.9.2</version>-->
+        </dependency>
+
+        <!-- Knife4j - 基于Swagger的API文档生成工具 -->
+        <!-- 提供可视化界面展示API接口，支持在线测试 -->
+        <!-- 需配合@EnableSwagger2或@EnableKnife4j注解使用 -->
+        <!-- TODO:加载这个依赖 必须要在sky_server的pom里加载knife4j依赖 并且配置一个接口文档的配置类!!! -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
