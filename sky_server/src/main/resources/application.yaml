@@ -27,9 +27,32 @@ spring:
       driver-class-name: ${hxl.datasource.driver-class-name}
       username: ${hxl.datasource.username}
       password: ${hxl.datasource.password}
-      url: jdbc:mysql://${hxl.datasource.host}:${hxl.datasource.host}/${hxl.datasource.database}?${hxl.datasource.serverTimezone}&${hxl.datasource.useUnicode}&${hxl.datasource.characterEncoding}&${hxl.datasource.zeroDateTimeBehavior}&${hxl.datasource.useSSL}&${hxl.datasource.allowPublicKeyRetrieval}
-
+      url: jdbc:mysql://${hxl.datasource.host}:${hxl.datasource.port}/${hxl.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
   #指定单个文件上传的大小
   servlet:
     multipart:
       max-file-size: 2MB
+
+#MyBatis配置 设置xml文件的扫描包路径
+mybatis:
+  #mapper配置文件 扫描 当前文件路径下的mapper包下的所有xml文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.hxl.entity # 给路径下的 pojo包 里的实体类 起别名
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+#配置jwt令牌校验(管理端和用户端)
+hxl:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: HxlAndJsj
+    # 设置jwt过期时间 设置为30天左右
+    admin-ttl: 2600000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+
+    #用户端
+    user-secret-key: HxlAndJsj
+    user-ttl: 2600000000
+    user-token-name: authentication
