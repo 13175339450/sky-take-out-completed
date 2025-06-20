@@ -26,4 +26,11 @@ public interface EmployeeService {
      * @return 返回 封装后的分页结果
      */
     PageResult employeePage(EmployeePageDTO employeePageDTO);
+
+    /**
+     * 启用、禁用员工
+     * @param status 员工的状态 1：启用  0：禁用
+     * @param id 员工id
+     */
+    void startOrStopEmployee(Integer status, Long id);
 }

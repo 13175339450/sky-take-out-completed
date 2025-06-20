@@ -65,7 +65,19 @@ public class EmployeeController {
 
         PageResult vo = employeeService.employeePage(employeePageDTO);
 
-
         return Result.success(vo);
+    }
+
+    /**
+     * 启用、禁用员工
+     */
+    @PostMapping("status/{status}")
+    @ApiOperation("启用、禁用员工相关接口")
+    public Result startOrStopEmployee(@PathVariable Integer status, Long id){
+        log.info("请求参数: {}, {}", status, id);
+
+        employeeService.startOrStopEmployee(status, id);
+
+        return Result.success();
     }
 }

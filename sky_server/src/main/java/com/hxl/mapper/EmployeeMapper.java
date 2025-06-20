@@ -28,4 +28,12 @@ public interface EmployeeMapper {
      * @return 返回分页结果 List<Employee></>集合
      */
     Page<EmployeePageVO> employeeDynamicPage(Employee employee);
+
+
+    /**
+     * 通用的update方法
+     * @param employee 要修改的员工信息 的实体类
+     * @return 1为修改成功 0为修改失败
+     */
+    int updateEmployeeInfo(Employee employee);
 }

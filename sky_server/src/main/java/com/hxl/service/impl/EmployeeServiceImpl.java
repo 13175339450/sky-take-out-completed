@@ -9,6 +9,7 @@ import com.hxl.constant.PasswordConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.EmployeePageDTO;
 import com.hxl.entity.Employee;
+import com.hxl.exception.AccountLockStatusException;
 import com.hxl.exception.AccountNotFoundException;
 import com.hxl.exception.PasswordErrorException;
 import com.hxl.mapper.EmployeeMapper;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.security.auth.login.AccountLockedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeInfo = employeeMapper.dynamicQuerySingleEmployee(condition);
 
         //3.判断是否存在该用户
-        if (employeeInfo == null){
+        if (employeeInfo == null) {
             //抛出自定义的 账户不存在 异常信息
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
@@ -64,9 +66,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         String newPassword = DigestUtils.md5DigestAsHex(submitPassword.getBytes());
 
         //密文密码不一致
-        if (!newPassword.equals(queryPassword)){
+        if (!newPassword.equals(queryPassword)) {
             //抛出自定义异常 密码错误 异常信息
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        }
+
+        //TODO: 修复 被禁用的账号不能登录
+        if (employeeInfo.getStatus() != StatusConstant.EMP_DEFAULT_STATUS) {
+            throw new AccountLockStatusException(MessageConstant.ACCOUNT_LOCK_STATUS_ERROR);
         }
 
         //创建token: 根据员工id值 + 加密密钥 + Token有效时间 组合创建
@@ -130,12 +137,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3.按照分页形式 去动态查询分页数据 用视图VO来接收
         Page<EmployeePageVO> page = employeeMapper.employeeDynamicPage(employee);
-        
+
         //4.获取相关数据
         long total = page.getTotal();
         List<EmployeePageVO> records = page.getResult();
 
         //5.结果封装 并返回
         return new PageResult(total, records);
+    }
+
+    /**
+     * 启用、禁用员工
+     */
+    @Override
+    public void startOrStopEmployee(Integer status, Long id) {
+        //构建对象
+        Employee employee = Employee.builder().id(id).status(status).build();
+
+        //此处用动态sql 声明一个动态的 通用的update方法
+        int row = employeeMapper.updateEmployeeInfo(employee);
     }
 }

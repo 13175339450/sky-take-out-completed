@@ -15,4 +15,6 @@ public class MessageConstant {
     public static final String USERNAME_ALREADY_EXIST = "用户名已存在!";
 
     public static final String UNKNOWN_ERROR = "未知错误!";
+
+    public static final String ACCOUNT_LOCK_STATUS_ERROR = "该账户已被禁用!";
 }
