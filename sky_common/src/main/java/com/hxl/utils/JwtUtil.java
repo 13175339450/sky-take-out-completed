@@ -13,7 +13,7 @@ public class JwtUtil {
     /**
      * 生成jwt
      * 使用Hs256算法, 私匙使用固定秘钥
-     *
+     * TODO： JWT库的自动校验：io.jsonwebtoken默认会验证exp字段，无需额外代码。
      * @param secretKey jwt秘钥
      * @param ttlMillis jwt过期时间(毫秒)
      * @param claims    设置的信息
@@ -34,7 +34,7 @@ public class JwtUtil {
                 // 设置签名使用的签名算法和签名使用的秘钥
                 .signWith(signatureAlgorithm, secretKey.getBytes(StandardCharsets.UTF_8))
                 // 设置过期时间
-                .setExpiration(exp);
+                .setExpiration(exp); //将配置的ttl转换为过期时间
 
         return builder.compact();
     }
@@ -47,7 +47,13 @@ public class JwtUtil {
      * @return
      */
     public static Claims parseJWT(String secretKey, String token) {
-        // 得到DefaultJwtParser
+        /* 得到DefaultJwtParser
+         * TODO: parseClaimsJws(token) 方法会自动验证以下内容：
+                签名有效性：确保 token 未被篡改。
+                过期时间（exp字段）：检查当前时间是否在 token 的expiration之后。
+                生效时间（nbf字段）：检查当前时间是否在 token 的notBefore之前（如果有设置）。
+         */
+
         Claims claims = Jwts.parser()
                 // 设置签名的秘钥
                 .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))

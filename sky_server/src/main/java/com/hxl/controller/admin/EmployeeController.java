@@ -1,5 +1,6 @@
 package com.hxl.controller.admin;
 
+import com.hxl.EmployeeAddDTO;
 import com.hxl.entity.Employee;
 import com.hxl.result.Result;
 import com.hxl.service.EmployeeService;
@@ -19,6 +20,9 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    /**
+     * 员工登录接口
+     */
     @PostMapping("login")
     @ApiOperation("员工登录接口")
     public Result<EmployeeLoginVO> employeeLogin(@RequestBody Employee employee){
@@ -27,5 +31,25 @@ public class EmployeeController {
         EmployeeLoginVO vo = employeeService.employeeLogin(employee);
         //登录成功 返沪结果给前端
         return Result.success(vo);
+    }
+
+    /**
+     * 退出登录接口
+     */
+    @PostMapping("logout")
+    @ApiOperation("退出登录")
+    public Result employeeLogout(){
+        return Result.success();
+    }
+
+    /**
+     * 新增员工接口
+     */
+    @PostMapping
+    @ApiOperation("新增员工接口")
+    public Result addEmployee(@RequestBody EmployeeAddDTO employeeAddDTO){
+        log.info("新增员工dto：{}", employeeAddDTO);
+        employeeService.addEmployee(employeeAddDTO);
+        return Result.success();
     }
 }

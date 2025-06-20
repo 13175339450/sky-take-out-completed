@@ -1,7 +1,11 @@
 package com.hxl.service.impl;
 
+import com.hxl.EmployeeAddDTO;
 import com.hxl.constant.JwtClaimsConstant;
 import com.hxl.constant.MessageConstant;
+import com.hxl.constant.PasswordConstant;
+import com.hxl.constant.StatusConstant;
+import com.hxl.context.BaseContext;
 import com.hxl.entity.Employee;
 import com.hxl.exception.AccountNotFoundException;
 import com.hxl.exception.PasswordErrorException;
@@ -10,10 +14,12 @@ import com.hxl.properties.JwtProperties;
 import com.hxl.service.EmployeeService;
 import com.hxl.utils.JwtUtil;
 import com.hxl.vo.EmployeeLoginVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,5 +83,32 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .name(employeeInfo.getName())
                 .userName(employee.getUsername())
                 .token(token).build();
+    }
+
+    /**
+     * 新增员工功能实现
+     * TODO:因为在新增员工时 要同时插入 create_time 和 create_user等信息
+     *      采用 AOP 切片编程
+     */
+    @Override
+    public void addEmployee(EmployeeAddDTO employeeAddDTO) {
+        // 存储员工信息的实体类
+        Employee employee = new Employee();
+
+        //1.属性拷贝 将填写的用户信息拷贝
+        BeanUtils.copyProperties(employeeAddDTO, employee);
+
+        //2.对部分信息进行补充 初始密码、账户状态、创建时间、更新时间、更新人、创建人
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        employee.setStatus(StatusConstant.EMP_DEFAULT_STATUS);
+
+        //已用共有AutoFill进行自动填充
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        //3.执行新增操作 如果该username已存在 会插入失败 利用全局异常处理器
+        int row = employeeMapper.insertEmployee(employee);
     }
 }
