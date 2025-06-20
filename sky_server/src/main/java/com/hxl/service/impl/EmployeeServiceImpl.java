@@ -1,26 +1,30 @@
 package com.hxl.service.impl;
 
-import com.hxl.EmployeeAddDTO;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.hxl.dto.EmployeeAddDTO;
 import com.hxl.constant.JwtClaimsConstant;
 import com.hxl.constant.MessageConstant;
 import com.hxl.constant.PasswordConstant;
 import com.hxl.constant.StatusConstant;
-import com.hxl.context.BaseContext;
+import com.hxl.dto.EmployeePageDTO;
 import com.hxl.entity.Employee;
 import com.hxl.exception.AccountNotFoundException;
 import com.hxl.exception.PasswordErrorException;
 import com.hxl.mapper.EmployeeMapper;
 import com.hxl.properties.JwtProperties;
+import com.hxl.result.PageResult;
 import com.hxl.service.EmployeeService;
 import com.hxl.utils.JwtUtil;
 import com.hxl.vo.EmployeeLoginVO;
+import com.hxl.vo.EmployeePageVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service //手动将类标记为 Spring Bean
@@ -110,5 +114,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3.执行新增操作 如果该username已存在 会插入失败 利用全局异常处理器
         int row = employeeMapper.insertEmployee(employee);
+    }
+
+
+    /**
+     * 员工分页查询
+     */
+    @Override
+    public PageResult employeePage(EmployeePageDTO employeePageDTO) {
+        //1.设置分页数据 当前页 页容量
+        PageHelper.startPage(employeePageDTO.getPage(), employeePageDTO.getPageSize());
+
+        //2.封装查询参数 name可以为空
+        Employee employee = Employee.builder().name(employeePageDTO.getName()).build();
+
+        //3.按照分页形式 去动态查询分页数据 用视图VO来接收
+        Page<EmployeePageVO> page = employeeMapper.employeeDynamicPage(employee);
+        
+        //4.获取相关数据
+        long total = page.getTotal();
+        List<EmployeePageVO> records = page.getResult();
+
+        //5.结果封装 并返回
+        return new PageResult(total, records);
     }
 }

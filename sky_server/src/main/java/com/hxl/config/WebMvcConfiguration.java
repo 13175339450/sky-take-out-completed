@@ -1,10 +1,14 @@
 package com.hxl.config;
 
 import com.hxl.interceptor.JwtTokenAdminInterceptor;
+import com.hxl.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -14,6 +18,8 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import java.util.List;
 
 @Configuration //声明这是一个配置类
 @Slf4j
@@ -37,7 +43,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      * 访问路径： localhost:8080/doc.html
      */
     @Bean
-    public Docket docketAdmin(){
+    public Docket docketAdmin() {
         log.info("开始通过knife4j生成接口文档");
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("sky_take_out接口文档")
@@ -95,5 +101,20 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         //对于像/webjars/bootstrap/5.3.0/css/bootstrap.min.css这样的请求，系统会到classpath:/META-INF/resources/webjars/目录中查找资源。
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    /**
+     * 配置 SpringMVC框架的 消息转换器
+     */
+    @Override
+    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        //创建一个消息转换器对象
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+
+        //为消息转换器设置一个 自定义的对象转换器 对象转换器可以将Java对象序列化为json数据
+        converter.setObjectMapper(new JacksonObjectMapper());
+
+        //将自定义的转换器加入容器里 0表示放在容器所有转化器的前面 不然在后面不会被使用到
+        converters.add(0, converter);
     }
 }

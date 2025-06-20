@@ -1,7 +1,9 @@
 package com.hxl.controller.admin;
 
-import com.hxl.EmployeeAddDTO;
+import com.hxl.dto.EmployeeAddDTO;
+import com.hxl.dto.EmployeePageDTO;
 import com.hxl.entity.Employee;
+import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.EmployeeService;
 import com.hxl.vo.EmployeeLoginVO;
@@ -51,5 +53,19 @@ public class EmployeeController {
         log.info("新增员工dto：{}", employeeAddDTO);
         employeeService.addEmployee(employeeAddDTO);
         return Result.success();
+    }
+
+    /**
+     * 员工分页查询
+     */
+    @GetMapping("page")
+    @ApiOperation("员工分页查询接口")
+    public Result<PageResult> employeePage(EmployeePageDTO employeePageDTO){
+        log.info("分页数据: {}", employeePageDTO);
+
+        PageResult vo = employeeService.employeePage(employeePageDTO);
+
+
+        return Result.success(vo);
     }
 }

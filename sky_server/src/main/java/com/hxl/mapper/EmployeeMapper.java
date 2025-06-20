@@ -1,8 +1,10 @@
 package com.hxl.mapper;
 
+import com.github.pagehelper.Page;
 import com.hxl.annotation.AutoFill;
 import com.hxl.entity.Employee;
 import com.hxl.enumeration.OperationType;
+import com.hxl.vo.EmployeePageVO;
 
 public interface EmployeeMapper {
     /**
@@ -19,4 +21,11 @@ public interface EmployeeMapper {
      */
     @AutoFill(OperationType.INSERT) //共有字段自动填充
     int insertEmployee(Employee employee);
+
+    /**
+     * 分页动态查询员工数据
+     * @param employee 员工实体类
+     * @return 返回分页结果 List<Employee></>集合
+     */
+    Page<EmployeePageVO> employeeDynamicPage(Employee employee);
 }

@@ -1,7 +1,9 @@
 package com.hxl.service;
 
-import com.hxl.EmployeeAddDTO;
+import com.hxl.dto.EmployeeAddDTO;
+import com.hxl.dto.EmployeePageDTO;
 import com.hxl.entity.Employee;
+import com.hxl.result.PageResult;
 import com.hxl.vo.EmployeeLoginVO;
 
 public interface EmployeeService {
@@ -17,4 +19,11 @@ public interface EmployeeService {
      * @param employeeAddDTO 实体DTO：封装了前端上传的 员工基本信息
      */
     void addEmployee(EmployeeAddDTO employeeAddDTO);
+
+    /**
+     * 员工分页查询接口
+     * @param employeePageDTO 分页信息DTO
+     * @return 返回 封装后的分页结果
+     */
+    PageResult employeePage(EmployeePageDTO employeePageDTO);
 }

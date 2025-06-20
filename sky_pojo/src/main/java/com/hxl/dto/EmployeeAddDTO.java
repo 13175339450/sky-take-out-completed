@@ -1,4 +1,4 @@
-package com.hxl;
+package com.hxl.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
