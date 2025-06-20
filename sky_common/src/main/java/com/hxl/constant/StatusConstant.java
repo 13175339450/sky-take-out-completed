@@ -8,6 +8,8 @@ public class StatusConstant {
     //员工账号 默认状态
     public static final Integer EMP_DEFAULT_STATUS = 1;
 
+    public static final Integer CATEGORY_DEFAULT_STATUS = 1;
+
     //菜品 默认状态
     public static final Integer DISH_DEFAULT_STATUS = 1;
 

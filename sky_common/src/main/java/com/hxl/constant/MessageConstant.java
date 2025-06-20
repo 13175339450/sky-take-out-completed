@@ -17,4 +17,6 @@ public class MessageConstant {
     public static final String UNKNOWN_ERROR = "未知错误!";
 
     public static final String ACCOUNT_LOCK_STATUS_ERROR = "该账户已被禁用!";
+
+    public static final String OLD_PASSWORD_ERROR = "原密码有误!";
 }

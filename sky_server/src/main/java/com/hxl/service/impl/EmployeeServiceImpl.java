@@ -2,6 +2,8 @@ package com.hxl.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hxl.dto.EmployeeEditInfoDTO;
+import com.hxl.dto.EditPasswordDTO;
 import com.hxl.dto.EmployeeAddDTO;
 import com.hxl.constant.JwtClaimsConstant;
 import com.hxl.constant.MessageConstant;
@@ -24,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import javax.security.auth.login.AccountLockedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         String username = employee.getUsername();
 
         //2.使用动态查询语句：用用户名来查找 单个 员工信息
-        Employee condition = Employee.builder().username(username).build();
-        Employee employeeInfo = employeeMapper.dynamicQuerySingleEmployee(condition);
+        Employee emp = Employee.builder().username(username).build();
+        Employee employeeInfo = employeeMapper.dynamicQuerySingleEmployee(emp);
 
         //3.判断是否存在该用户
         if (employeeInfo == null) {
@@ -156,5 +157,63 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //此处用动态sql 声明一个动态的 通用的update方法
         int row = employeeMapper.updateEmployeeInfo(employee);
+    }
+
+    /**
+     * 修改账户密码
+     *
+     * @param editPasswordDTO 员工提交新密码的封装DTO类
+     */
+    @Override
+    public void editPassword(EditPasswordDTO editPasswordDTO) {
+        //封装实体类
+        Employee employee = Employee.builder().id(editPasswordDTO.getEmpId()).build();
+
+        //查询当前账户的相关数据
+        Employee employeeInfo = employeeMapper.dynamicQuerySingleEmployee(employee);
+
+        //2.判断旧密码是否正确
+        String oldPassword = editPasswordDTO.getOldPassword();
+        if (!DigestUtils.md5DigestAsHex(oldPassword.getBytes()).equals(employeeInfo.getPassword())) {
+            //旧密码有误
+            throw new PasswordErrorException(MessageConstant.OLD_PASSWORD_ERROR);
+        }
+
+        //3.将密码进行更新 需要转换成密文
+        String newPassword = editPasswordDTO.getNewPassword();
+        employee.setPassword(DigestUtils.md5DigestAsHex(newPassword.getBytes()));
+
+        //4.调用通用update方法
+        employeeMapper.updateEmployeeInfo(employee);
+    }
+
+    /**
+     * 根据id查询员工信息
+     */
+    @Override
+    public Employee queryEmployeeInfoById(Long id) {
+        //封装实体类
+        Employee condition = Employee.builder().id(id).build();
+
+        //调用通用查询方法
+        Employee employee = employeeMapper.dynamicQuerySingleEmployee(condition);
+
+        //将密码进行隐藏
+        employee.setPassword("******");
+
+        return employee;
+    }
+
+    /**
+     * 编辑员工信息
+     */
+    @Override
+    public void editEmployeeInfo(EmployeeEditInfoDTO employeeEditInfoDTO) {
+        Employee employee = new Employee();
+        //属性拷贝
+        BeanUtils.copyProperties(employeeEditInfoDTO, employee);
+
+        //调用通用的更新方法
+        employeeMapper.updateEmployeeInfo(employee);
     }
 }

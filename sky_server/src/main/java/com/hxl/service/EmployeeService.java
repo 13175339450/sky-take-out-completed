@@ -1,5 +1,7 @@
 package com.hxl.service;
 
+import com.hxl.dto.EmployeeEditInfoDTO;
+import com.hxl.dto.EditPasswordDTO;
 import com.hxl.dto.EmployeeAddDTO;
 import com.hxl.dto.EmployeePageDTO;
 import com.hxl.entity.Employee;
@@ -33,4 +35,23 @@ public interface EmployeeService {
      * @param id 员工id
      */
     void startOrStopEmployee(Integer status, Long id);
+
+    /**
+     * 修改账户密码
+     * @param editPasswordDTO 员工提交新密码的封装DTO类
+     */
+    void editPassword(EditPasswordDTO editPasswordDTO);
+
+    /**
+     * 根据id查询员工信息
+     * id 员工id
+     * @return 将查询的结果封装到实体类Employee里
+     */
+    Employee queryEmployeeInfoById(Long id);
+
+    /**
+     * 编辑员工信息
+     * @param employeeEditInfoDTO 存储修改后的员工信息的DTO
+     */
+    void editEmployeeInfo(EmployeeEditInfoDTO employeeEditInfoDTO);
 }

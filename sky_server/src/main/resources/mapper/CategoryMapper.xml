@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.CategoryMapper">
+
+    <!-- 分类分页查询 动态sql -->
+    <select id="categoryDynamicPage" resultType="com.hxl.vo.CategoryPageVO">
+        select id, type, name, sort, status, create_time, update_time, create_user, update_user from category
+            <where>
+                <if test="name != null">
+                    and name like concat('%', #{name},'%')
+                </if>
+                <if test="type != null">
+                    and type = #{type}
+                </if>
+            </where>
+                order by sort asc
+    </select>
+
+    <!-- 新增分类 -->
+    <insert id="insertCategory">
+        insert into category (type, name, sort, status, create_time, update_time, create_user, update_user)
+            VALUES (#{type}, #{name}, #{sort}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <!-- 通用的更新方法 -->
+    <update id="updateCategory">
+        update category
+            <set>
+                <if test="type != null">
+                    , type = #{type}
+                </if>
+                <if test="name != null">
+                    , name = #{name}
+                </if>
+                <if test="sort != null">
+                    , sort = #{sort}
+                </if>
+                <if test="status != null">
+                    , status = #{status}
+                </if>
+                <if test="updateTime != null">
+                    , update_time = #{updateTime}
+                </if>
+                <if test="updateUser != null">
+                    , update_user = #{updateUser}
+                </if>
+            </set>
+                where id = #{id}
+    </update>
+
+    <!-- 通用的动态查询分类的方法 -->
+    <select id="queryCategory" resultType="com.hxl.entity.Category">
+        select * from category
+            <where>
+                <if test="id != null">
+                    and id = #{id}
+                </if>
+                <if test="name != null">
+                    and name = #{name}
+                </if>
+                <if test="sort != null">
+                    and sort = #{sort}
+                </if>
+                <if test="status != null">
+                    and status = #{status}
+                </if>
+                <if test="type != null">
+                    and type = #{type}
+                </if>
+                <if test="createTime != null">
+                    and create_time = #{createTime}
+                </if>
+                <if test="createUser != null">
+                    and create_user = #{createUser}
+                </if>
+                <if test="updateTime != null">
+                    and update_time = #{updateTime}
+                </if>
+                <if test="updateUser != null">
+                    and update_user = #{updateUser}
+                </if>
+            </where>
+    </select>
+</mapper>

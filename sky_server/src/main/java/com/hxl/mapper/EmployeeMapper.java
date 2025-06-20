@@ -9,17 +9,17 @@ import com.hxl.vo.EmployeePageVO;
 public interface EmployeeMapper {
     /**
      * 查询员工相关信息
-     * @param condition 动态查询
+     * @param employee 动态查询
      * @return 将员工信息封装到Employee类里返回
      */
-    Employee dynamicQuerySingleEmployee(Employee condition);
+    Employee dynamicQuerySingleEmployee(Employee employee);
 
     /**
      * 新增员工
      * @param employee 封装员工相关信息
      * @return 返回0表示插入失败 1表示成功
      */
-    @AutoFill(OperationType.INSERT) //共有字段自动填充
+    @AutoFill(OperationType.INSERT) //插入方法 共有字段自动填充
     int insertEmployee(Employee employee);
 
     /**
@@ -35,5 +35,6 @@ public interface EmployeeMapper {
      * @param employee 要修改的员工信息 的实体类
      * @return 1为修改成功 0为修改失败
      */
+    @AutoFill(OperationType.UPDATE)//更新方法 共有字段自动填充
     int updateEmployeeInfo(Employee employee);
 }
