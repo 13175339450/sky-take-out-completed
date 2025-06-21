@@ -13,18 +13,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel("新增分类接口的DTO")
-public class CategoryAddDTO implements Serializable {
+@ApiModel("菜品分页查询接口的DTO")
+public class DishPageDTO implements Serializable {
 
     @ApiModelProperty("分类id")
-    private Long id;
+    private Long categoryId;
 
-    @ApiModelProperty("分类名称")
+    @ApiModelProperty("菜品名称")
     private String name;
 
-    @ApiModelProperty("排序")
-    private Integer sort;
+    @ApiModelProperty("页码")
+    private Integer page;
 
-    @ApiModelProperty("分类类型")
-    private Integer type;
+    @ApiModelProperty("页容量")
+    private Integer pageSize;
+
+    @ApiModelProperty("分类状态")
+    private Integer status;
 }

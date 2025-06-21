@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.DishMapper">
+
+    <!-- 动态查询菜品分页数据 -->
+    <select id="dishDynamicPage" resultType="com.hxl.vo.DishPageVO">
+        select d.id id, d.name, category_id, price, image, description, d.status, d.update_time, c.name category_name
+            from dish d left join category c
+                on d.category_id = c.id
+                    <where>
+                        <if test="categoryId != null">
+                            and category_id = #{categoryId}
+                        </if>
+                        <if test="name != null">
+                            and d.name like concat('%', #{name}, '%')
+                        </if>
+                        <if test="status != null">
+                            and d.status = #{status}
+                        </if>
+                    </where>
+                        order by price
+    </select>
+
+    <!-- 通用更新方法 动态sql -->
+    <update id="updateDish">
+        update dish
+            <set>
+                <if test="name != null">
+                    , name = #{name}
+                </if>
+                <if test="categoryId != null">
+                    , category_id = #{categoryId}
+                </if>
+                <if test="price != null">
+                    , price = #{price}
+                </if>
+                <if test="image != null">
+                    , image = #{image}
+                </if>
+                <if test="description != null">
+                    , description = #{description}
+                </if>
+                <if test="status != null">
+                    , status = #{status}
+                </if>
+                <if test="updateTime != null">
+                    , update_time = #{updateTime}
+                </if>
+                <if test="updateUser != null">
+                    , update_user = #{updateUser}
+                </if>
+            </set>
+                where id = #{id}
+    </update>
+
+    <!-- 向菜品表里插入一条数据 -->
+    <insert id="insertDish" useGeneratedKeys="true" keyProperty="id">
+        insert into dish (name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)
+            values (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+</mapper>

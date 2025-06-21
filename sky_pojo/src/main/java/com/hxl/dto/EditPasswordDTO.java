@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel("修改后的账户密码的DTO")
+@ApiModel("修改账户密码接口的DTO")
 public class EditPasswordDTO implements Serializable {
 
     @ApiModelProperty("员工id")

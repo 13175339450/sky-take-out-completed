@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
  * 所谓序列化，就是把对象的状态转变为字节流，方便进行存储（例如写入文件）或者传输（例如通过网络发送）
  * 而反序列化则是相反的过程，能将字节流重新恢复成对象。
  */
-@ApiModel("员工表相对应的实体类")
+@ApiModel("员工表对应的实体类")
 public class Employee implements Serializable {
 
     /* 手动设定一个固定的serialVersionUID（例如示例中的1L），能够确保即便类的结构有所改变，

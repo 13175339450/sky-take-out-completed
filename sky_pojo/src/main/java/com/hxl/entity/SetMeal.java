@@ -14,25 +14,31 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel("分类表对应的实体类")
-public class Category implements Serializable {
+@ApiModel("套餐表对应的实体类")
+public class SetMeal implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("分类id")
+    @ApiModelProperty("套餐id")
     private Long id;
 
-    @ApiModelProperty("分类类型")
-    private Integer type;
+    @ApiModelProperty("分类id")
+    private Long categoryId;
 
-    @ApiModelProperty("分类名称")
+    @ApiModelProperty("套餐名称")
     private String name;
 
-    @ApiModelProperty("分类排序")
-    private Integer sort;
+    @ApiModelProperty("套餐价格")
+    private Double price;
 
-    @ApiModelProperty("分类状态")
+    @ApiModelProperty("套餐状态")
     private Integer status;
+
+    @ApiModelProperty("套餐描述")
+    private String description;
+
+    @ApiModelProperty("套餐图片的URL")
+    private String image;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createTime;

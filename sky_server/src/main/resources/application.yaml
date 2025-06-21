@@ -18,7 +18,8 @@ logging:
 
 spring:
   profiles:
-    active: dev #动态激活的yaml配置
+    #动态激活的yaml配置
+    active: dev, aliOssInfo
   main:
     allow-circular-references: true
   #配置连接池信息
@@ -56,3 +57,9 @@ hxl:
     user-secret-key: HxlAndJsj
     user-ttl: 2600000000
     user-token-name: authentication
+  #阿里Oss相关配置
+  alioss:
+    endpoint: ${hxl.alioss.endpoint}
+    access-key-id: ${hxl.alioss.access-key-id}
+    access-key-secret: ${hxl.alioss.access-key-secret}
+    bucket-name: ${hxl.alioss.bucket-name}

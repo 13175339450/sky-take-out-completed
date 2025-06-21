@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.DishFlavorMapper">
+
+    <!-- 批量插入菜品口味信息表 -->
+    <insert id="insertDishFlavorBatch">
+        insert into dish_flavor (dish_id, name, value)
+            values
+                <foreach collection="flavors" separator="," item="f">
+                    (#{f.dishId}, #{f.name}, #{f.value})
+                </foreach>
+    </insert>
+</mapper>
