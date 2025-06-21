@@ -5,6 +5,7 @@ import com.hxl.annotation.AutoFill;
 import com.hxl.entity.Category;
 import com.hxl.enumeration.OperationType;
 import com.hxl.vo.CategoryPageVO;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -38,4 +39,14 @@ public interface CategoryMapper {
      * @return 返回查询结果集合
      */
     List<Category> queryCategory(Category category);
+
+    /**
+     * 根据分类id查询分类的 售卖状态
+     * @param id 分类id
+     * @return 1表示启售中 0表示禁售中
+     */
+    @Select("select status from category where id = #{id}")
+    Integer queryStatus(Long id);
+
+    int deleteCategory(Category category);
 }

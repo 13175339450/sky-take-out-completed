@@ -84,4 +84,36 @@
                 </if>
             </where>
     </select>
+
+    <!-- 通用的删除分类的方法 -->
+    <delete id="deleteCategory">
+        delete from category
+            <where>
+                <if test="id != null">
+                    and id = #{id}
+                </if>
+                <if test="type != null">
+                    and type = #{type}
+                </if>
+                <if test="name != null">
+                    and name = #{name}
+                </if>
+                <if test="sort != null">
+                    and sort = #{sort}
+                </if>
+                <if test="createTime != null">
+                    and creat_time = #{createTime}
+                </if>
+                <if test="updateTime != null">
+                    and update_time = #{updateTime}
+                </if>
+                <if test="createUser != null">
+                    and create_user = #{createUser}
+                </if>
+                <if test="updateUser != null">
+                    and update_user = #{updateUser}
+                </if>
+            </where>
+    </delete>
+
 </mapper>

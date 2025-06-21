@@ -19,4 +19,10 @@ public class MessageConstant {
     public static final String ACCOUNT_LOCK_STATUS_ERROR = "该账户已被禁用!";
 
     public static final String OLD_PASSWORD_ERROR = "原密码有误!";
+
+    public static final String DELETE_FAIL_START_CATEGORY = "启售中的分类不能删除!";
+
+    public static final String DELETE_FAIL_CATEGORY_BIND_DISH = "该分类已绑定菜品,不能删除!";
+
+    public static final String DELETE_FAIL_CATEGORY_BIND_SET_MEAL = "该分类已绑定套餐,不能删除!";
 }

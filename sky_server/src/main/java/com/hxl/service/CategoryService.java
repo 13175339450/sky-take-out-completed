@@ -41,4 +41,10 @@ public interface CategoryService {
      * @return 获取该type类型的所有分类的集合
      */
     List<Category> queryCategoryByType(Integer type);
+
+    /**
+     * 删除分类
+     * @param id 分类id
+     */
+    void deleteCategory(Long id);
 }

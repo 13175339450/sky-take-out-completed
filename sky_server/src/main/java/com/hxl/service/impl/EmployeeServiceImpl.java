@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //TODO: 修复 被禁用的账号不能登录
-        if (employeeInfo.getStatus() != StatusConstant.EMP_DEFAULT_STATUS) {
+        if (!employeeInfo.getStatus().equals(StatusConstant.EMP_DEFAULT_STATUS)) {
             throw new AccountLockStatusException(MessageConstant.ACCOUNT_LOCK_STATUS_ERROR);
         }
 

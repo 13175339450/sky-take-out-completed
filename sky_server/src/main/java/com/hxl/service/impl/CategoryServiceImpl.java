@@ -2,12 +2,16 @@ package com.hxl.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hxl.constant.MessageConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.CategoryAddDTO;
 import com.hxl.dto.CategoryEditDTO;
 import com.hxl.dto.CategoryPageDTO;
 import com.hxl.entity.Category;
+import com.hxl.exception.DeleteFailException;
 import com.hxl.mapper.CategoryMapper;
+import com.hxl.mapper.DishMapper;
+import com.hxl.mapper.SetMealMapper;
 import com.hxl.result.PageResult;
 import com.hxl.service.CategoryService;
 import com.hxl.vo.CategoryPageVO;
@@ -22,6 +26,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private DishMapper dishMapper;
+
+    @Autowired
+    private SetMealMapper setMealMapper;
 
     /**
      * 分类分页查询
@@ -97,8 +107,43 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = Category.builder().type(type).build();
 
         //定义通用查询方法
-        List<Category> categoryList = categoryMapper.queryCategory(category);
+        return categoryMapper.queryCategory(category);
+    }
 
-        return categoryList;
+    /**
+     * 删除分类
+     * TODO: 删除分类需要满足如下条件: 逻辑删除
+     *          1.该分类必须是 停售状态
+     *          2.该分类没有绑定菜品、套餐
+     */
+    @Override
+    public void deleteCategory(Long id) {
+        //1.获取分类的status --- 查询具体的字段 效率更高
+        Integer status = categoryMapper.queryStatus(id);
+
+        if (status.equals(StatusConstant.CATEGORY_DEFAULT_STATUS)){
+            //启售中的分类不能删除
+            throw new DeleteFailException(MessageConstant.DELETE_FAIL_START_CATEGORY);
+        }
+
+        //2.检查分类是否绑定了菜品
+        Integer amount = dishMapper.getCategoryBindDishAmount(id);
+
+        if (amount > 0){
+            //绑定菜品的分类不能删除
+            throw new DeleteFailException(MessageConstant.DELETE_FAIL_CATEGORY_BIND_DISH);
+        }
+
+        //3.检查分类是否绑定了套餐
+        amount = setMealMapper.getCategoryBindSetMeal(id);
+
+        if (amount > 0){
+            //绑定套餐的分类不能删除
+            throw new DeleteFailException(MessageConstant.DELETE_FAIL_CATEGORY_BIND_SET_MEAL);
+        }
+
+        //4.执行删除操作 通用的删除方法
+        Category category = Category.builder().id(id).build();
+        int row = categoryMapper.deleteCategory(category);
     }
 }
