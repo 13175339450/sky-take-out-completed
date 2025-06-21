@@ -1,8 +1,9 @@
 package com.hxl.service;
 
-import com.hxl.dto.DishAddDTO;
+import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
 import com.hxl.result.PageResult;
+import com.hxl.vo.DishVO;
 
 public interface DishService {
     /**
@@ -21,7 +22,20 @@ public interface DishService {
 
     /**
      * 新增菜品
-     * @param dishAddDTO 新增菜品数据的DTO
+     * @param dishDTO 新增菜品数据的DTO
      */
-    void addDish(DishAddDTO dishAddDTO);
+    void addDish(DishDTO dishDTO);
+
+    /**
+     * 根据id查询菜品信息
+     * @param id 菜品id
+     * @return 返回菜品信息的VO
+     */
+    DishVO queryDishById(Long id);
+
+    /**
+     * 修改菜品
+     * @param dishDTO 新的菜品数据
+     */
+    void updateDish(DishDTO dishDTO);
 }

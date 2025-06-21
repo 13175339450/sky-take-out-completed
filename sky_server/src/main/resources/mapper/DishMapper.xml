@@ -61,4 +61,17 @@
         insert into dish (name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)
             values (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
     </insert>
+
+    <!-- 通用的查询菜品信息 -->
+    <select id="queryDish" resultType="com.hxl.entity.Dish">
+        select * from dish
+            <where>
+                <if test="id != null">
+                    and id = #{id}
+                </if>
+                <if test="name != null">
+                    and name = #{name}
+                </if>
+            </where>
+    </select>
 </mapper>

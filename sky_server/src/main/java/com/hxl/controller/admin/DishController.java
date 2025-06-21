@@ -1,10 +1,11 @@
 package com.hxl.controller.admin;
 
-import com.hxl.dto.DishAddDTO;
+import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
 import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.DishService;
+import com.hxl.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -52,10 +53,36 @@ public class DishController {
      */
     @PostMapping
     @ApiOperation("新增菜品")
-    public Result addDish(@RequestBody DishAddDTO dishAddDTO) {
-        log.info("新增菜品: {}", dishAddDTO);
+    public Result addDish(@RequestBody DishDTO dishDTO) {
+        log.info("新增菜品: {}", dishDTO);
 
-        dishService.addDish(dishAddDTO);
+        dishService.addDish(dishDTO);
+
+        return Result.success();
+    }
+
+    /**
+     * 根绝id查询菜品
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询菜品")
+    public Result<DishVO> queryDishById(@PathVariable Long id){
+        log.info("根据id查询菜品: {}", id);
+
+        DishVO vo = dishService.queryDishById(id);
+
+        return Result.success(vo);
+    }
+
+    /**
+     * 修改菜品
+     */
+    @PutMapping
+    @ApiOperation("修改菜品")
+    public Result updateDish(@RequestBody DishDTO dishDTO){
+        log.info("修改菜品: {}", dishDTO);
+
+        dishService.updateDish(dishDTO);
 
         return Result.success();
     }

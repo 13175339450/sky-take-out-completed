@@ -1,7 +1,6 @@
 package com.hxl.dto;
 
 import com.hxl.entity.DishFlavor;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ApiModel("新增菜品接口的DTO")
-public class DishAddDTO implements Serializable {
+public class DishDTO implements Serializable {
 
     @ApiModelProperty("分类id")
     public Long categoryId;

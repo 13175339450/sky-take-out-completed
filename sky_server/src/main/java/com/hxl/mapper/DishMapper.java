@@ -38,4 +38,11 @@ public interface DishMapper {
      */
     @AutoFill(OperationType.INSERT)
     int insertDish(Dish dish);
+
+    /**
+     * 通用的查询菜品信息的方法
+     * @param dish 封装查询条件的菜品实体类
+     * @return 返回查询的结果
+     */
+    Dish queryDish(Dish dish);
 }

@@ -13,4 +13,10 @@
                     (#{f.dishId}, #{f.name}, #{f.value})
                 </foreach>
     </insert>
+
+    <!-- 根据菜品id查询 口味信息 -->
+    <select id="queryFlavorByDishId" resultType="com.hxl.entity.DishFlavor">
+        select * from dish_flavor
+            where dish_id = #{dishId}
+    </select>
 </mapper>
