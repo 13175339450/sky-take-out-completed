@@ -16,9 +16,17 @@
     <!-- 批量插入套餐菜品关联信息 -->
     <insert id="insertSetMealDish">
         insert into set_meal_dish (setmeal_id, dish_id, name, price, copies)
-            values 
+            values
                 <foreach collection="setMealDishes" item="sd" separator=",">
                     (#{sd.setmealId}, #{sd.dishId}, #{sd.name}, #{sd.price}, #{sd.copies})
                 </foreach>
     </insert>
+
+    <!-- 批量删除套餐的方法 -->
+    <delete id="deleteSetMealDishBySetMealId">
+        delete from set_meal_dish where setmeal_id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
 </mapper>

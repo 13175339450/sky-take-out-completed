@@ -1,9 +1,12 @@
 package com.hxl.service;
 
 import com.hxl.dto.SetMealAddDTO;
+import com.hxl.dto.SetMealEditDTO;
 import com.hxl.dto.SetMealPageDTO;
 import com.hxl.result.PageResult;
 import com.hxl.vo.SetMealVO;
+
+import java.util.List;
 
 public interface SetMealService {
     /**
@@ -31,4 +34,16 @@ public interface SetMealService {
      * @param id 套餐id
      */
     SetMealVO querySetMealById(Long id);
+
+    /**
+     * 修改套餐
+     * @param setMealEditDTO 修改后的套餐信息的DTO
+     */
+    void editSetMeal(SetMealEditDTO setMealEditDTO);
+
+    /**
+     * 批量删除套餐
+     * @param ids 套餐id集合
+     */
+    void deleteSetMealBatch(List<Long> ids);
 }

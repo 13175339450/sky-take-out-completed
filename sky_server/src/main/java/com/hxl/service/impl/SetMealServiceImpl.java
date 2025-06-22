@@ -2,11 +2,14 @@ package com.hxl.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hxl.constant.MessageConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.SetMealAddDTO;
+import com.hxl.dto.SetMealEditDTO;
 import com.hxl.dto.SetMealPageDTO;
 import com.hxl.entity.SetMeal;
 import com.hxl.entity.SetMealDish;
+import com.hxl.exception.DeleteFailException;
 import com.hxl.mapper.SetMealDishMapper;
 import com.hxl.mapper.SetMealMapper;
 import com.hxl.result.PageResult;
@@ -112,5 +115,61 @@ public class SetMealServiceImpl implements SetMealService {
 
         setMealVO.setSetmealDishes(setMealDishes);
         return setMealVO;
+    }
+
+    /**
+     * 修改套餐: 开启事务
+     *      1.更新套餐表信息
+     *      2.删除原有的该套餐和菜品关联信息
+     *      3.插入新的套餐和菜品的关联信息
+     */
+    @Override
+    @Transactional
+    public void editSetMeal(SetMealEditDTO setMealEditDTO) {
+        //更新套餐信息
+        SetMeal setMeal = new SetMeal();
+        BeanUtils.copyProperties(setMealEditDTO, setMeal);
+        setMealMapper.updateSetMeal(setMeal);//调用通用的更新方法
+
+        //根据套餐id 删除原有的套餐和菜品的信息
+        Long setMealId = setMealEditDTO.getId();
+
+        //调用批量删除方法
+        List<Long> ids = new ArrayList<>();
+        ids.add(setMealId);
+        setMealDishMapper.deleteSetMealDishBySetMealId(ids);
+
+        //插入新的套餐菜品信息
+        List<SetMealDish> setmealDishes = setMealEditDTO.getSetmealDishes();
+
+        //TODO: 赋值 套餐id值
+        for (SetMealDish setmealDish : setmealDishes) {
+            setmealDish.setSetmealId(setMealId);
+        }
+
+        if (setmealDishes == null || setmealDishes.isEmpty()) return;
+
+        setMealDishMapper.insertSetMealDish(setmealDishes);
+    }
+
+    /**
+     * 批量套餐
+     */
+    @Override
+    @Transactional
+    public void deleteSetMealBatch(List<Long> ids) {
+        //批量查询起售中的套餐数量
+        Integer amount = setMealMapper.getStartSetMealAmountBatch(ids);
+
+        if (amount > 0){
+            //起售中的套餐不能删除
+            throw new DeleteFailException(MessageConstant.DELETE_FAIL_START_SET_MEAL);
+        }
+
+        //删除套餐表里的套餐数据
+        setMealMapper.deleteSetMealBatch(ids);
+
+        //删除套餐菜品表里的数据
+        setMealDishMapper.deleteSetMealDishBySetMealId(ids);
     }
 }

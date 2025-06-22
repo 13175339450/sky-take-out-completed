@@ -1,6 +1,7 @@
 package com.hxl.controller.admin;
 
 import com.hxl.dto.SetMealAddDTO;
+import com.hxl.dto.SetMealEditDTO;
 import com.hxl.dto.SetMealPageDTO;
 import com.hxl.entity.SetMeal;
 import com.hxl.result.PageResult;
@@ -11,8 +12,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController("adminSetMealController")
 @RequestMapping("/admin/setmeal")
@@ -67,11 +71,37 @@ public class SetMealController {
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询套餐")
-    public Result<SetMealVO> querySetMealById(@PathVariable Long id){
+    public Result<SetMealVO> querySetMealById(@PathVariable Long id) {
         log.info("根据id查询套餐: {}", id);
 
         SetMealVO vo = setMealService.querySetMealById(id);
 
         return Result.success(vo);
+    }
+
+    /**
+     * 修改套餐
+     */
+    @PutMapping
+    @ApiOperation("修改套餐")
+    public Result editSetMeal(@RequestBody SetMealEditDTO setMealEditDTO) {
+        log.info("修改套餐: {}", setMealEditDTO);
+
+        setMealService.editSetMeal(setMealEditDTO);
+
+        return Result.success();
+    }
+
+    /**
+     * 批量删除套餐
+     */
+    @DeleteMapping
+    @ApiOperation("批量删除套餐")
+    public Result deleteSetMealBatch(@RequestParam List<Long> ids){
+        log.info("批量删除套餐: {}", ids);
+
+        setMealService.deleteSetMealBatch(ids);
+
+        return Result.success();
     }
 }

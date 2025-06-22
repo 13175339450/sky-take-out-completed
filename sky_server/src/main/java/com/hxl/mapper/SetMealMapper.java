@@ -8,6 +8,8 @@ import com.hxl.vo.SetMealPageVO;
 import com.hxl.vo.SetMealVO;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 public interface SetMealMapper {
     /**
      * 根据category_id 查询绑定的 setMeal套餐的数量
@@ -45,4 +47,18 @@ public interface SetMealMapper {
      * @return
      */
     SetMealVO querySetMealById(Long id);
+
+    /**
+     * 批量查询启售中套餐的数量
+     * @param ids 套餐id集合
+     * @return 返回起售套餐数量
+     */
+    int getStartSetMealAmountBatch(List<Long> ids);
+
+    /**
+     * 批量删除套餐信息
+     * @param ids 套餐id集合
+     * @return 返回删除的行数
+     */
+    int deleteSetMealBatch(List<Long> ids);
 }

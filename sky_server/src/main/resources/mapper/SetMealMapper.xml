@@ -11,9 +11,10 @@
             values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
     </insert>
 
+
     <!-- 套餐分页查询 需要多表联查 -->
 
-<select id="setMealPage" resultType="com.hxl.vo.SetMealPageVO">
+    <select id="setMealPage" resultType="com.hxl.vo.SetMealPageVO">
         select s.id, s.category_id, s.name, s.price, s.status, s.description, s.image, s.update_time, c.name categoryName
             from set_meal s left join category c
                 on s.category_id = c.id
@@ -69,4 +70,22 @@
             from set_meal s left join category c on s.category_id = c.id
                 where s.id = #{id}
     </select>
+
+    <!-- 批量查询启售中套餐的数量 -->
+    <select id="getStartSetMealAmountBatch" resultType="java.lang.Integer">
+        select count(*) from set_meal
+        where status = 1 and id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- 批量删除套餐信息 -->
+    <delete id="deleteSetMealBatch">
+        delete from set_meal where id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
+
 </mapper>
