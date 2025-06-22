@@ -2,15 +2,20 @@ package com.hxl.controller.admin;
 
 import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
+import com.hxl.entity.Dish;
 import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.DishService;
 import com.hxl.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.License;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController("adminDishController")
 @RequestMapping("/admin/dish")
@@ -66,7 +71,7 @@ public class DishController {
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询菜品")
-    public Result<DishVO> queryDishById(@PathVariable Long id){
+    public Result<DishVO> queryDishById(@PathVariable Long id) {
         log.info("根据id查询菜品: {}", id);
 
         DishVO vo = dishService.queryDishById(id);
@@ -79,10 +84,38 @@ public class DishController {
      */
     @PutMapping
     @ApiOperation("修改菜品")
-    public Result updateDish(@RequestBody DishDTO dishDTO){
+    public Result updateDish(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品: {}", dishDTO);
 
         dishService.updateDish(dishDTO);
+
+        return Result.success();
+    }
+
+    /**
+     * 根据分类id查询菜品
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<Dish>> queryDishByCategoryId(Long categoryId) {
+        log.info("根据分类id查询菜品信息: {}", categoryId);
+
+        List<Dish> vo = dishService.queryDishByCategoryId(categoryId);
+
+        return Result.success(vo);
+    }
+
+    /**
+     * 批量删除菜品
+     *    TODO: 接收 "1,2,3"这种参数时，需要加 @RequestParam注解
+     *      mvc会自动将参数转换为List集合
+     */
+    @DeleteMapping
+    @ApiOperation("批量删除菜品")
+    public Result deleteDishBatch(@RequestParam List<Long> ids){
+        log.info("批量删除菜品: {}", ids);
+
+        dishService.deleteDishBatch(ids);
 
         return Result.success();
     }

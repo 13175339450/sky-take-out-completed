@@ -2,13 +2,17 @@ package com.hxl.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hxl.constant.MessageConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
 import com.hxl.entity.Dish;
 import com.hxl.entity.DishFlavor;
+import com.hxl.exception.DeleteFailException;
 import com.hxl.mapper.DishFlavorMapper;
 import com.hxl.mapper.DishMapper;
+import com.hxl.mapper.SetMealDishMapper;
+import com.hxl.mapper.SetMealMapper;
 import com.hxl.result.PageResult;
 import com.hxl.service.DishService;
 import com.hxl.vo.DishPageVO;
@@ -27,6 +31,9 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
+
+    @Autowired
+    private SetMealDishMapper setMealDishMapper;
 
     /**
      * 菜品分页查询
@@ -109,11 +116,13 @@ public class DishServiceImpl implements DishService {
         //创建通用查询的实体类
         Dish dish = Dish.builder().id(id).build();
 
-        //使用菜品表的
-        dish = dishMapper.queryDish(dish);
+        //使用菜品表的 只有一个数据
+        List<Dish> dishes = dishMapper.queryDish(dish);
+
+        if (dishes == null || dishes.isEmpty()) return null;
 
         //属性拷贝 填充菜品相关数据
-        BeanUtils.copyProperties(dish, dishVO);
+        BeanUtils.copyProperties(dishes.get(0), dishVO);
 
         //根据菜品id 查询菜品对应的口味信息
         List<DishFlavor> flavors = dishFlavorMapper.queryFlavorByDishId(id);
@@ -157,5 +166,47 @@ public class DishServiceImpl implements DishService {
 
         //调用批量插入口味信息的方法
         dishFlavorMapper.insertDishFlavorBatch(flavors);
+    }
+
+    /**
+     * 根据分类id查询菜品信息
+     */
+    @Override
+    public List<Dish> queryDishByCategoryId(Long categoryId) {
+        //封装查询条件到实体类里
+        Dish dish = Dish.builder().categoryId(categoryId).build();
+
+        //根据分类id查询菜品信息 --- 调用通用查询方法
+        return dishMapper.queryDish(dish);
+    }
+
+    /**
+     * 根据菜品id 批量删除菜品
+     */
+    @Override
+    @Transactional //开启注解
+    public void deleteDishBatch(List<Long> ids) {
+        /* 要删除的菜品必须全部是 禁售 状态 否则全部删除失败
+         * 调用批量查询方法 */
+        Integer amount = dishMapper.getStatusAmountBatch(ids);
+
+        if (amount > 0){
+            //启售中的菜品不同删除
+            throw new DeleteFailException(MessageConstant.DELETE_FAIL_START_DISH);
+        }
+
+        //绑定了套餐的菜品不能删除
+        amount = setMealDishMapper.getSetMealBindDishAmountBatch(ids);
+
+        if (amount > 0){
+            //绑定了套餐的菜品不能删除
+            throw new DeleteFailException(MessageConstant.DELETE_FAIL_DISH_BIND_SET_MEAL);
+        }
+
+        //批量删除菜品
+        dishMapper.deleteDishBatch(ids);
+
+        //批量删除口味信息
+        dishFlavorMapper.deleteFlavorBatchByDishId(ids);
     }
 }

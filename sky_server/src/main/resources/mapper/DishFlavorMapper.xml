@@ -19,4 +19,12 @@
         select * from dish_flavor
             where dish_id = #{dishId}
     </select>
+
+    <!-- 批量删除菜品口味信息 -->
+    <delete id="deleteFlavorBatchByDishId">
+        delete from dish_flavor where dish_id in
+            <foreach collection="ids" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+    </delete>
 </mapper>

@@ -2,8 +2,11 @@ package com.hxl.service;
 
 import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
+import com.hxl.entity.Dish;
 import com.hxl.result.PageResult;
 import com.hxl.vo.DishVO;
+
+import java.util.List;
 
 public interface DishService {
     /**
@@ -38,4 +41,17 @@ public interface DishService {
      * @param dishDTO 新的菜品数据
      */
     void updateDish(DishDTO dishDTO);
+
+    /**
+     * 根据分类id查询菜品信息
+     * @param categoryId 分类id
+     * @return 返回该分类id所绑定的菜品信息
+     */
+    List<Dish> queryDishByCategoryId(Long categoryId);
+
+    /**
+     * 批量删除菜品
+     * @param ids 要删除的 菜品id集合
+     */
+    void deleteDishBatch(List<Long> ids);
 }

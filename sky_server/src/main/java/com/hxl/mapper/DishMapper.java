@@ -8,6 +8,8 @@ import com.hxl.enumeration.OperationType;
 import com.hxl.vo.DishPageVO;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 public interface DishMapper {
     /**
      * 根据 category_id 查询 绑定的dish的数量
@@ -44,5 +46,18 @@ public interface DishMapper {
      * @param dish 封装查询条件的菜品实体类
      * @return 返回查询的结果
      */
-    Dish queryDish(Dish dish);
+    List<Dish> queryDish(Dish dish);
+
+    /**
+     * 根据菜品id 批量查询 启售菜品的数量
+     * @param ids 菜品id 的集合
+     * @return 返回启售中的菜品数量
+     */
+    Integer getStatusAmountBatch(List<Long> ids);
+
+    /**
+     * 批量删除菜品信息
+     * @param ids 菜品id
+     */
+    void deleteDishBatch(List<Long> ids);
 }

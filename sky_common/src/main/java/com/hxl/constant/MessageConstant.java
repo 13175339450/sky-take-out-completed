@@ -22,9 +22,14 @@ public class MessageConstant {
 
     public static final String DELETE_FAIL_START_CATEGORY = "启售中的分类不能删除!";
 
+    public static final String DELETE_FAIL_START_DISH = "启售中的菜品不能删除!";
+
     public static final String DELETE_FAIL_CATEGORY_BIND_DISH = "该分类已绑定菜品,不能删除!";
+
+    public static final String DELETE_FAIL_DISH_BIND_SET_MEAL = "该菜品已绑定套餐,不能删除!";
 
     public static final String DELETE_FAIL_CATEGORY_BIND_SET_MEAL = "该分类已绑定套餐,不能删除!";
 
     public static final String UPLOAD_FAILED = "文件上传失败!";
+
 }
