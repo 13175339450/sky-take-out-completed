@@ -1,6 +1,7 @@
 package com.hxl.mapper;
 
 import com.hxl.entity.SetMealDish;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -18,4 +19,12 @@ public interface SetMealDishMapper {
      * @return 0表示插入失败 否则表示插入成功的记录数
      */
     int insertSetMealDish(List<SetMealDish> setMealDishes);
+
+    /**
+     * 根据套餐id查询套餐菜品信息
+     * @param id 套餐id
+     * @return 返回套餐菜品信息
+     */
+    @Select("select * from set_meal_dish where setmeal_id = #{id}")
+    List<SetMealDish> querySetMealDishBySetmealId(Long id);
 }

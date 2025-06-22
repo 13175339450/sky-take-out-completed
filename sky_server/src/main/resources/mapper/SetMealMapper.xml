@@ -12,7 +12,8 @@
     </insert>
 
     <!-- 套餐分页查询 需要多表联查 -->
-    <select id="setMealPage" resultType="com.hxl.vo.SetMealPageVO">
+
+<select id="setMealPage" resultType="com.hxl.vo.SetMealPageVO">
         select s.id, s.category_id, s.name, s.price, s.status, s.description, s.image, s.update_time, c.name categoryName
             from set_meal s left join category c
                 on s.category_id = c.id
@@ -28,5 +29,44 @@
                         </if>
                     </where>
                         order by price
+    </select>
+
+    <!-- 通用的更新方法 根据套餐id更新-->
+    <update id="updateSetMeal">
+        update set_meal
+            <set>
+                <if test="categoryId != null">
+                    , category_id = #{categoryId}
+                </if>
+                <if test="name != null">
+                    , name = #{name}
+                </if>
+                <if test="price != null">
+                    , price = #{price}
+                </if>
+                <if test="status != null">
+                    , status = #{status}
+                </if>
+                <if test="description != null">
+                    , description = #{description}
+                </if>
+                <if test="image != null">
+                    , image = #{image}
+                </if>
+                <if test="updateTime != null">
+                    , update_time = #{updateTime}
+                </if>
+                <if test="updateUser != null">
+                    , update_user = #{updateUser}
+                </if>
+            </set>
+                where id = #{id}
+    </update>
+
+    <!-- 根据套餐id查询套餐数据 -->
+    <select id="querySetMealById" resultType="com.hxl.vo.SetMealVO">
+        select s.id, category_id, s.name, price, s.status, description, image, s.update_time, c.name categoryName
+            from set_meal s left join category c on s.category_id = c.id
+                where s.id = #{id}
     </select>
 </mapper>

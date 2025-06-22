@@ -12,11 +12,13 @@ import com.hxl.mapper.SetMealMapper;
 import com.hxl.result.PageResult;
 import com.hxl.service.SetMealService;
 import com.hxl.vo.SetMealPageVO;
+import com.hxl.vo.SetMealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -83,5 +85,32 @@ public class SetMealServiceImpl implements SetMealService {
 
         //结果返回
         return new PageResult(total, records);
+    }
+
+    /**
+     * 套餐起售、停售
+     */
+    @Override
+    public void startOrStopSetMeal(Integer status, Long id) {
+        //封装实体类
+        SetMeal setMeal = SetMeal.builder().status(status).id(id).build();
+
+        //调用通用的update方法
+        setMealMapper.updateSetMeal(setMeal);
+    }
+
+    /**
+     * 根据套餐id查询套餐信息: 套餐信息 + 套餐和菜品的关联
+     */
+    @Override
+    public SetMealVO querySetMealById(Long id) {
+        //根据id查询套餐信息
+        SetMealVO setMealVO = setMealMapper.querySetMealById(id);
+
+        //根据套餐id查询 套餐菜品信息
+        List<SetMealDish> setMealDishes = setMealDishMapper.querySetMealDishBySetmealId(id);
+
+        setMealVO.setSetmealDishes(setMealDishes);
+        return setMealVO;
     }
 }

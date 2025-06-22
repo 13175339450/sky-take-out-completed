@@ -2,9 +2,11 @@ package com.hxl.controller.admin;
 
 import com.hxl.dto.SetMealAddDTO;
 import com.hxl.dto.SetMealPageDTO;
+import com.hxl.entity.SetMeal;
 import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.SetMealService;
+import com.hxl.vo.SetMealVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +28,7 @@ public class SetMealController {
      */
     @PostMapping
     @ApiOperation("新增套餐")
-    public Result addSeaMeal(@RequestBody SetMealAddDTO setMealAddDTO){
+    public Result addSeaMeal(@RequestBody SetMealAddDTO setMealAddDTO) {
         log.info("新增套餐: {}", setMealAddDTO);
 
         setMealService.addSetMeal(setMealAddDTO);
@@ -39,10 +41,36 @@ public class SetMealController {
      */
     @GetMapping("/page")
     @ApiOperation("分页查询套餐信息")
-    public Result<PageResult> SetMealPage(SetMealPageDTO setMealPageDTO){
+    public Result<PageResult> SetMealPage(SetMealPageDTO setMealPageDTO) {
         log.info("分页查询套餐信息: {}", setMealPageDTO);
 
         PageResult vo = setMealService.SetMealPage(setMealPageDTO);
+
+        return Result.success(vo);
+    }
+
+    /**
+     * 套餐起售、停售
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("套餐起售、停售")
+    public Result startOrStopSetMeal(@PathVariable Integer status, Long id) {
+        log.info("套餐起售、停售: {}, {}", status, id);
+
+        setMealService.startOrStopSetMeal(status, id);
+
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询套餐信息
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询套餐")
+    public Result<SetMealVO> querySetMealById(@PathVariable Long id){
+        log.info("根据id查询套餐: {}", id);
+
+        SetMealVO vo = setMealService.querySetMealById(id);
 
         return Result.success(vo);
     }

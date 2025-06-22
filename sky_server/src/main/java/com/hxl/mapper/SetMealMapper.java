@@ -5,6 +5,7 @@ import com.hxl.annotation.AutoFill;
 import com.hxl.entity.SetMeal;
 import com.hxl.enumeration.OperationType;
 import com.hxl.vo.SetMealPageVO;
+import com.hxl.vo.SetMealVO;
 import org.apache.ibatis.annotations.Select;
 
 public interface SetMealMapper {
@@ -30,4 +31,18 @@ public interface SetMealMapper {
      * @return 返回分页数据
      */
     Page<SetMealPageVO> setMealPage(SetMeal setMeal);
+
+    /**
+     * 调用通用的update方法
+     * @param setMeal 更新条件和更新数据
+     * @return 1表示更新成功 0表示更新失败
+     */
+    @AutoFill(OperationType.UPDATE)
+    int updateSetMeal(SetMeal setMeal);
+
+    /**
+     * 根据套餐id 查询套餐信息 多表联查
+     * @return
+     */
+    SetMealVO querySetMealById(Long id);
 }
