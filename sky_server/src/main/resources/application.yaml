@@ -19,9 +19,10 @@ logging:
 spring:
   profiles:
     #动态激活的yaml配置
-    active: dev, aliOssInfo
+    active: dev, aliOssInfo, redisInfo
   main:
     allow-circular-references: true
+
   #配置连接池信息
   datasource:
     druid:
@@ -33,6 +34,41 @@ spring:
   servlet:
     multipart:
       max-file-size: 2MB
+  #redis相关配置
+  redis:
+    # Redis 密码，用于认证连接 默认连接0号数据库  共0~15
+    password: ${redis.password}
+
+    # Redis 集群配置
+    cluster:
+      # 集群节点列表，格式为 host:port
+      nodes:
+        - ${redis.cluster.nodes[0]}
+        - ${redis.cluster.nodes[1]}
+        - ${redis.cluster.nodes[2]}
+        - ${redis.cluster.nodes[3]}
+        - ${redis.cluster.nodes[4]}
+        - ${redis.cluster.nodes[5]}
+
+      # 最大重定向次数，用于处理 MOVED/ASK 错误
+      max-redirects: 3
+
+    # Lettuce 连接池配置优化 可以不用写
+    lettuce:
+      cluster:
+        refresh:
+          adaptive: true #支持集群拓扑动态感应刷新
+          period: 2000 #设置2s刷新一次
+      pool:
+        # 连接池最大活跃连接数
+        max-active: 8
+        # 连接池最大等待时间（负数表示无限等待）
+        max-wait: -1ms
+        # 连接池最大空闲连接数
+        max-idle: 8
+        # 连接池最小空闲连接数
+        min-idle: 0
+
 
 #MyBatis配置 设置xml文件的扫描包路径
 mybatis:
@@ -63,3 +99,4 @@ hxl:
     access-key-id: ${hxl.alioss.access-key-id}
     access-key-secret: ${hxl.alioss.access-key-secret}
     bucket-name: ${hxl.alioss.bucket-name}
+

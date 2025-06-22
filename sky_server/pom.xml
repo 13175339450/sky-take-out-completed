@@ -130,17 +130,17 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
 
-        <!--        &lt;!&ndash; Redis缓存与数据存储 &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
-        <!--        </dependency>-->
+                <!-- Redis缓存与数据存储 -->
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-redis</artifactId>
+                </dependency>
 
-        <!--        &lt;!&ndash; Spring缓存抽象层 &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-cache</artifactId>-->
-        <!--        </dependency>-->
+                <!-- Spring缓存抽象层 -->
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-cache</artifactId>
+                </dependency>
 
     </dependencies>
 

@@ -4,6 +4,6 @@
 *.class
 *Test.java
 **/test/
-**/application-aliOssInfo.y*ml
+**/*Info.y*ml
 **/*Info.yml
 **/*.xlsx
