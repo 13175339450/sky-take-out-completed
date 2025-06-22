@@ -75,6 +75,7 @@ public class CategoryController {
 
     /**
      * 根据类型type查询分类
+     *    TODO: 停售的分类不能被查询到
      */
     @GetMapping("list")
     @ApiOperation("根据类型查询分类")

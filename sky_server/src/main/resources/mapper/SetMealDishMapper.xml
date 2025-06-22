@@ -12,4 +12,13 @@
                     #{id}
                 </foreach>
     </select>
+
+    <!-- 批量插入套餐菜品关联信息 -->
+    <insert id="insertSetMealDish">
+        insert into set_meal_dish (setmeal_id, dish_id, name, price, copies)
+            values 
+                <foreach collection="setMealDishes" item="sd" separator=",">
+                    (#{sd.setmealId}, #{sd.dishId}, #{sd.name}, #{sd.price}, #{sd.copies})
+                </foreach>
+    </insert>
 </mapper>

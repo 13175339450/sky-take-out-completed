@@ -170,6 +170,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 根据分类id查询菜品信息
+     *    TODO: 停售的不能被查询到
      */
     @Override
     public List<Dish> queryDishByCategoryId(Long categoryId) {

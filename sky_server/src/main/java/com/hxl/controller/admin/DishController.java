@@ -94,6 +94,7 @@ public class DishController {
 
     /**
      * 根据分类id查询菜品
+     *  TODO: 停售的不能被查询到
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")

@@ -53,8 +53,7 @@
 
     <!-- 通用的动态查询分类的方法 -->
     <select id="queryCategory" resultType="com.hxl.entity.Category">
-        select * from category
-            <where>
+        select * from category where status = 1
                 <if test="id != null">
                     and id = #{id}
                 </if>
@@ -82,7 +81,6 @@
                 <if test="updateUser != null">
                     and update_user = #{updateUser}
                 </if>
-            </where>
     </select>
 
     <!-- 通用的删除分类的方法 -->

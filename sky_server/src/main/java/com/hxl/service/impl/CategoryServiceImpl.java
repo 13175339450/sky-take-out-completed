@@ -106,7 +106,7 @@ public class CategoryServiceImpl implements CategoryService {
         //封装实体对象
         Category category = Category.builder().type(type).build();
 
-        //定义通用查询方法
+        //定义通用查询方法 停售的不能被查询
         return categoryMapper.queryCategory(category);
     }
 

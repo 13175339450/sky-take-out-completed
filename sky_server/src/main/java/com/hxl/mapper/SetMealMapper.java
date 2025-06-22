@@ -1,5 +1,8 @@
 package com.hxl.mapper;
 
+import com.hxl.annotation.AutoFill;
+import com.hxl.entity.SetMeal;
+import com.hxl.enumeration.OperationType;
 import org.apache.ibatis.annotations.Select;
 
 public interface SetMealMapper {
@@ -10,4 +13,12 @@ public interface SetMealMapper {
      */
     @Select("select count(*) from set_meal where category_id = #{categoryId}")
     Integer getCategoryBindSetMeal(Long categoryId);
+
+    /**
+     * 新增套餐方法
+     * @param setMeal 套餐数据
+     * @return 1表示插入成功 0表示插入失败
+     */
+    @AutoFill(OperationType.INSERT)
+    int insertSetMeal(SetMeal setMeal);
 }

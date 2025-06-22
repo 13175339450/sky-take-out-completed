@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.SetMealMapper">
+
+    <!-- 新增套餐的方法 -->
+    <insert id="insertSetMeal" useGeneratedKeys="true" keyProperty="id">
+        insert into set_meal (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user)
+            values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+</mapper>

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -29,7 +30,7 @@ public class SetMeal implements Serializable {
     private String name;
 
     @ApiModelProperty("套餐价格")
-    private Double price;
+    private BigDecimal price;
 
     @ApiModelProperty("套餐状态")
     private Integer status;
