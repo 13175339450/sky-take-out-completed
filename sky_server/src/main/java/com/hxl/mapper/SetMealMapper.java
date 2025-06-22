@@ -1,8 +1,10 @@
 package com.hxl.mapper;
 
+import com.github.pagehelper.Page;
 import com.hxl.annotation.AutoFill;
 import com.hxl.entity.SetMeal;
 import com.hxl.enumeration.OperationType;
+import com.hxl.vo.SetMealPageVO;
 import org.apache.ibatis.annotations.Select;
 
 public interface SetMealMapper {
@@ -21,4 +23,11 @@ public interface SetMealMapper {
      */
     @AutoFill(OperationType.INSERT)
     int insertSetMeal(SetMeal setMeal);
+
+    /**
+     * 套餐分页查询
+     * @param setMeal 查询条件的封装
+     * @return 返回分页数据
+     */
+    Page<SetMealPageVO> setMealPage(SetMeal setMeal);
 }

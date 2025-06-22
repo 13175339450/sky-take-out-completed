@@ -1,12 +1,17 @@
 package com.hxl.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.SetMealAddDTO;
+import com.hxl.dto.SetMealPageDTO;
 import com.hxl.entity.SetMeal;
 import com.hxl.entity.SetMealDish;
 import com.hxl.mapper.SetMealDishMapper;
 import com.hxl.mapper.SetMealMapper;
+import com.hxl.result.PageResult;
 import com.hxl.service.SetMealService;
+import com.hxl.vo.SetMealPageVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +60,28 @@ public class SetMealServiceImpl implements SetMealService {
 
         //批量插入
         setMealDishMapper.insertSetMealDish(setMealDishes);
+    }
+
+    /**
+     * 套餐分页查询
+     */
+    @Override
+    public PageResult SetMealPage(SetMealPageDTO setMealPageDTO) {
+        //设置分页数据
+        PageHelper.startPage(setMealPageDTO.getPage(), setMealPageDTO.getPageSize());
+
+        //实体类封装查询条件
+        SetMeal setMeal = new SetMeal();
+        BeanUtils.copyProperties(setMealPageDTO, setMeal);
+
+        //进行分页查询 特殊的VO类
+        Page<SetMealPageVO> page = setMealMapper.setMealPage(setMeal);
+
+        //获取对应的结果
+        long total = page.getTotal();
+        List<SetMealPageVO> records = page.getResult();
+
+        //结果返回
+        return new PageResult(total, records);
     }
 }

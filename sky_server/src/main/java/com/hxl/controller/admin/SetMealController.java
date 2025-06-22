@@ -1,16 +1,16 @@
 package com.hxl.controller.admin;
 
 import com.hxl.dto.SetMealAddDTO;
+import com.hxl.dto.SetMealPageDTO;
+import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.SetMealService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("adminSetMealController")
 @RequestMapping("/admin/setmeal")
@@ -32,5 +32,18 @@ public class SetMealController {
         setMealService.addSetMeal(setMealAddDTO);
 
         return Result.success();
+    }
+
+    /**
+     * 分页查询套餐数据
+     */
+    @GetMapping("/page")
+    @ApiOperation("分页查询套餐信息")
+    public Result<PageResult> SetMealPage(SetMealPageDTO setMealPageDTO){
+        log.info("分页查询套餐信息: {}", setMealPageDTO);
+
+        PageResult vo = setMealService.SetMealPage(setMealPageDTO);
+
+        return Result.success(vo);
     }
 }
