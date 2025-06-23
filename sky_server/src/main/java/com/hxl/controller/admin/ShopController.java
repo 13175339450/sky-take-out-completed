@@ -38,9 +38,6 @@ public class ShopController {
     public Result<Integer> getShopStatus() {
         Integer status = shopService.getShopStatus();
 
-        //TODO: bug 当第一次连接redis时，查询到status为null 需要将状态设置为0 避免异常
-        status = status == null ? 0 : status;
-
         log.info("获取店铺营业状态: {}", status == 1 ? "营业中" : "打烊中");
 
         return Result.success(status);

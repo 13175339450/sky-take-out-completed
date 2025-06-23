@@ -1,11 +1,13 @@
 package com.hxl.controller.admin;
 
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
 import com.hxl.entity.Dish;
 import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.DishService;
+import com.hxl.utils.RedisCacheUtil;
 import com.hxl.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +27,9 @@ public class DishController {
 
     @Autowired
     private DishService dishService;
+
+    @Autowired
+    private RedisCacheUtil redisCacheUtil;
 
 
     /**
@@ -50,6 +55,9 @@ public class DishController {
 
         dishService.startOrStopDish(status, id);
 
+        //清空全部 因为原redis数据已不完整
+        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
+
         return Result.success();
     }
 
@@ -62,6 +70,9 @@ public class DishController {
         log.info("新增菜品: {}", dishDTO);
 
         dishService.addDish(dishDTO);
+
+        //清空全部 因为原redis数据已不完整
+        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }
@@ -88,6 +99,9 @@ public class DishController {
         log.info("修改菜品: {}", dishDTO);
 
         dishService.updateDish(dishDTO);
+
+        //清空全部 因为原redis数据已不完整
+        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }
@@ -117,6 +131,9 @@ public class DishController {
         log.info("批量删除菜品: {}", ids);
 
         dishService.deleteDishBatch(ids);
+
+        //清空全部 因为原redis数据已不完整
+        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }

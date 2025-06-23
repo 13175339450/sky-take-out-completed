@@ -1,5 +1,6 @@
 package com.hxl.controller.admin;
 
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.dto.CategoryAddDTO;
 import com.hxl.dto.CategoryEditDTO;
 import com.hxl.dto.CategoryPageDTO;
@@ -7,10 +8,12 @@ import com.hxl.entity.Category;
 import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.CategoryService;
+import com.hxl.utils.RedisCacheUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +26,12 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private RedisCacheUtil redisCacheUtil;
 
     @GetMapping("/page")
     @ApiOperation("分类分页查询接口")
@@ -44,6 +53,9 @@ public class CategoryController {
 
         categoryService.addCategory(categoryAddDTO);
 
+        //删除redis缓存
+        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
+
         return Result.success();
     }
 
@@ -51,11 +63,14 @@ public class CategoryController {
      * 启用、禁用分类
      */
     @PostMapping("/status/{status}")
-    @ApiOperation("启用、进行分类")
+    @ApiOperation("启用、禁用分类")
     public Result startOrStopCategory(@PathVariable Integer status, Long id) {
         log.info("启用、禁用分类: {}, {}", status, id);
 
         categoryService.startOrStopCategory(status, id);
+
+        //删除redis缓存
+        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
 
         return Result.success();
     }
@@ -69,6 +84,9 @@ public class CategoryController {
         log.info("修改分类: {}", categoryEditDTO);
 
         categoryService.editCategory(categoryEditDTO);
+
+        //删除redis缓存
+        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
 
         return Result.success();
     }
@@ -97,6 +115,10 @@ public class CategoryController {
 
         categoryService.deleteCategory(id);
 
+        //删除redis缓存
+        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
+
         return Result.success();
     }
+
 }

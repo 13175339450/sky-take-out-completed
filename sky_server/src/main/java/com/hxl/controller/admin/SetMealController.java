@@ -1,5 +1,6 @@
 package com.hxl.controller.admin;
 
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.dto.SetMealAddDTO;
 import com.hxl.dto.SetMealEditDTO;
 import com.hxl.dto.SetMealPageDTO;
@@ -7,6 +8,7 @@ import com.hxl.entity.SetMeal;
 import com.hxl.result.PageResult;
 import com.hxl.result.Result;
 import com.hxl.service.SetMealService;
+import com.hxl.utils.RedisCacheUtil;
 import com.hxl.vo.SetMealVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,6 +29,9 @@ public class SetMealController {
     @Autowired
     private SetMealService setMealService;
 
+    @Autowired
+    private RedisCacheUtil redisCacheUtil;
+
     /**
      * 新增套餐
      */
@@ -36,6 +41,9 @@ public class SetMealController {
         log.info("新增套餐: {}", setMealAddDTO);
 
         setMealService.addSetMeal(setMealAddDTO);
+
+        //清空套餐
+        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
 
         return Result.success();
     }
@@ -63,6 +71,9 @@ public class SetMealController {
 
         setMealService.startOrStopSetMeal(status, id);
 
+        //清空套餐
+        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
+
         return Result.success();
     }
 
@@ -89,6 +100,11 @@ public class SetMealController {
 
         setMealService.editSetMeal(setMealEditDTO);
 
+        //清空套餐缓存
+        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
+        //清空套餐绑定的菜品缓存
+        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_DISH_CACHE);
+
         return Result.success();
     }
 
@@ -101,6 +117,11 @@ public class SetMealController {
         log.info("批量删除套餐: {}", ids);
 
         setMealService.deleteSetMealBatch(ids);
+
+        //清空套餐缓存
+        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
+        //清空套餐绑定的菜品缓存
+        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_DISH_CACHE);
 
         return Result.success();
     }

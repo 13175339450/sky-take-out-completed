@@ -17,6 +17,7 @@ import com.hxl.service.CategoryService;
 import com.hxl.vo.CategoryPageVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private SetMealMapper setMealMapper;
+
 
     /**
      * 分类分页查询
@@ -103,6 +105,9 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<Category> queryCategoryByType(Integer type) {
+
+        //检查Redis里是否
+
         //封装实体对象
         Category category = Category.builder().type(type).build();
 
