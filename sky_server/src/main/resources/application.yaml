@@ -19,7 +19,7 @@ logging:
 spring:
   profiles:
     #动态激活的yaml配置
-    active: dev, aliOssInfo, redisInfo
+    active: dev, aliOssInfo, redisInfo, weChatInfo
   main:
     allow-circular-references: true
 
@@ -89,7 +89,7 @@ hxl:
     # 设置前端传递过来的令牌名称
     admin-token-name: token
 
-    #用户端
+    #微信用户端的 jwt
     user-secret-key: HxlAndJsj
     user-ttl: 2600000000
     user-token-name: authentication
@@ -100,3 +100,7 @@ hxl:
     access-key-secret: ${hxl.alioss.access-key-secret}
     bucket-name: ${hxl.alioss.bucket-name}
 
+  #微信小程序
+  wechat:
+    appid: ${hxl.wechat.appid}
+    secret: ${hxl.wechat.secret}
