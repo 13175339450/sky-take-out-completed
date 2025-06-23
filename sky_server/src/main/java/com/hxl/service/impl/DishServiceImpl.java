@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -209,5 +210,37 @@ public class DishServiceImpl implements DishService {
 
         //批量删除口味信息
         dishFlavorMapper.deleteFlavorBatchByDishId(ids);
+    }
+
+    /**
+     * 用户端的 根据分类id 查询菜品及其口味信息
+     */
+    @Override
+    public List<DishVO> queryDishAndFlavorsByCategoryId(Long categoryId) {
+        //先根据分类id查询到相应的菜品(已起售的)集合 调用通用的方法
+        Dish dish = Dish.builder().categoryId(categoryId).build();
+        List<Dish> dishes = dishMapper.queryDish(dish);
+
+        //当前分类下 没有菜品
+        if (dishes == null) return null;
+
+        //结果封装类
+        List<DishVO> dishVOS = new ArrayList<>();
+
+        //分别查询每个菜品对应口味
+        for (Dish d : dishes) {
+            //每个数据的封装类
+            DishVO dishVO = new DishVO();
+            //查询每个菜品的口味
+            List<DishFlavor> flavors = dishFlavorMapper.queryFlavorByDishId(d.getId());
+            //将原有菜品基本数据拷贝
+            BeanUtils.copyProperties(d, dishVO);
+            //填充口味信息
+            dishVO.setFlavors(flavors);
+
+            //结果存储
+            dishVOS.add(dishVO);
+        }
+        return dishVOS;
     }
 }

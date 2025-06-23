@@ -3,7 +3,9 @@ package com.hxl.service;
 import com.hxl.dto.SetMealAddDTO;
 import com.hxl.dto.SetMealEditDTO;
 import com.hxl.dto.SetMealPageDTO;
+import com.hxl.entity.SetMeal;
 import com.hxl.result.PageResult;
+import com.hxl.vo.DishItemVO;
 import com.hxl.vo.SetMealVO;
 
 import java.util.List;
@@ -46,4 +48,18 @@ public interface SetMealService {
      * @param ids 套餐id集合
      */
     void deleteSetMealBatch(List<Long> ids);
+
+    /**
+     * 用户端根据分类id查询套餐信息
+     * @param categoryId 分类id
+     * @return 返回该分类id对应的套餐集合
+     */
+    List<SetMeal> querySetMealByCategoryId(Long categoryId);
+
+    /**
+     * 根据套餐id查询相应的菜品信息
+     * @param id 套餐id
+     * @return 返回菜品信息
+     */
+    List<DishItemVO> queryDishBySetMealId(Long id);
 }

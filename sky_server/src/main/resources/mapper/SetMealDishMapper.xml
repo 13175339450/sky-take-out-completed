@@ -29,4 +29,12 @@
                 #{id}
             </foreach>
     </delete>
+
+    <!-- 根据套餐id查询相关的菜品信息 多表联查-->
+    <select id="queryDishBySetMealId" resultType="com.hxl.vo.DishItemVO">
+        select copies, description, image, s.name
+            from set_meal_dish s left join dish d
+                on s.dish_id = d.id
+                    where setmeal_id = #{id}
+    </select>
 </mapper>

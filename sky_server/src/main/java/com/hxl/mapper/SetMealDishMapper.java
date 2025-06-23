@@ -1,6 +1,7 @@
 package com.hxl.mapper;
 
 import com.hxl.entity.SetMealDish;
+import com.hxl.vo.DishItemVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
@@ -35,4 +36,11 @@ public interface SetMealDishMapper {
      * return 0表示删除失败 反之为删除的行数
      */
     int deleteSetMealDishBySetMealId(List<Long> ids);
+
+    /**
+     * 用户端 根据套餐id查询菜品信息 多表联查 包括停售的
+     * @param id 套餐id
+     * @return 返回相关菜品信息
+     */
+    List<DishItemVO> queryDishBySetMealId(Long id);
 }

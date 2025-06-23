@@ -14,6 +14,7 @@ import com.hxl.mapper.SetMealDishMapper;
 import com.hxl.mapper.SetMealMapper;
 import com.hxl.result.PageResult;
 import com.hxl.service.SetMealService;
+import com.hxl.vo.DishItemVO;
 import com.hxl.vo.SetMealPageVO;
 import com.hxl.vo.SetMealVO;
 import org.springframework.beans.BeanUtils;
@@ -171,5 +172,24 @@ public class SetMealServiceImpl implements SetMealService {
 
         //删除套餐菜品表里的数据
         setMealDishMapper.deleteSetMealDishBySetMealId(ids);
+    }
+
+    /**
+     * 根据分类id查询套餐信息
+     */
+    @Override
+    public List<SetMeal> querySetMealByCategoryId(Long categoryId) {
+
+        //根据分类id查询套餐信息 启售中的套餐
+        return setMealMapper.querySetMealByCategoryId(categoryId);
+    }
+
+    /**
+     * 根据套餐id 查询菜品信息 多表联查
+     */
+    @Override
+    public List<DishItemVO> queryDishBySetMealId(Long id) {
+        //根据套餐id查询菜品信息 可以包括停售的
+        return setMealDishMapper.queryDishBySetMealId(id);
     }
 }

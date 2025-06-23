@@ -61,4 +61,12 @@ public interface SetMealMapper {
      * @return 返回删除的行数
      */
     int deleteSetMealBatch(List<Long> ids);
+
+    /**
+     * 用户端 根据分类id查询套餐信息
+     * @param categoryId 分类id
+     * @return 返回启售中的套餐信息
+     */
+    @Select("select * from set_meal where status = 1 and category_id = #{categoryId}")
+    List<SetMeal> querySetMealByCategoryId(Long categoryId);
 }

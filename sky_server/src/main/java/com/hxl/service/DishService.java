@@ -43,7 +43,7 @@ public interface DishService {
     void updateDish(DishDTO dishDTO);
 
     /**
-     * 根据分类id查询菜品信息
+     * 管理端的 根据分类id查询菜品信息
      * @param categoryId 分类id
      * @return 返回该分类id所绑定的菜品信息
      */
@@ -54,4 +54,11 @@ public interface DishService {
      * @param ids 要删除的 菜品id集合
      */
     void deleteDishBatch(List<Long> ids);
+
+    /**
+     * 用户端的 根据categoryId查询菜品及其口味信息的接口
+     * @param categoryId
+     * @return
+     */
+    List<DishVO> queryDishAndFlavorsByCategoryId(Long categoryId);
 }
