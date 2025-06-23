@@ -14,7 +14,6 @@ import com.hxl.service.UserService;
 import com.hxl.utils.HttpClientUtil;
 import com.hxl.utils.JwtUtil;
 import com.hxl.vo.UserLoginVO;
-import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

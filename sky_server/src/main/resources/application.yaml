@@ -93,6 +93,7 @@ hxl:
     user-secret-key: HxlAndJsj
     user-ttl: 2600000000
     user-token-name: authentication
+
   #阿里Oss相关配置
   alioss:
     endpoint: ${hxl.alioss.endpoint}

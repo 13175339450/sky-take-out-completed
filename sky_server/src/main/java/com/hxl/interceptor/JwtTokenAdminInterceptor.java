@@ -38,7 +38,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("开启Handler拦截器");
+        log.info("开启AdminHandler拦截器");
         //1.判断当前拦截到的是Controller的方法还是其它资源
         if (!(handler instanceof HandlerMethod)) {
             //当前拦截到的不是动态方法 直接放行
@@ -54,7 +54,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         //校验令牌
         try {
             log.info("jwt令牌校验: {}", token);
-            // token解密 根据加密密钥secretKey 解密 token
+            // token解密 根据加密密钥secretKey 解密 token 如果失败(token过期等等)则会自动抛出异常
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             log.info("获取成功");
             //获取解密后的 id 员工id
@@ -79,7 +79,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             //token有效 放行
             return true;
         } catch (Exception e) {
-            //不通过 相应 401 状态码
+            //不通过 响应 401 状态码
             response.setStatus(401);
             return false;//拦截
         }

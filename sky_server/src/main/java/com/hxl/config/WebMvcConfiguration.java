@@ -1,6 +1,7 @@
 package com.hxl.config;
 
 import com.hxl.interceptor.JwtTokenAdminInterceptor;
+import com.hxl.interceptor.JwtTokenUserInterceptor;
 import com.hxl.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
+    @Autowired
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
+
     /**
      * 注册自定义的拦截器
      */
@@ -36,6 +40,12 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**") //拦截的路径
                 .excludePathPatterns("/admin/employee/login"); //排除登录
+
+        //注册用户端的拦截器
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/user/**")//拦截的路径
+                .excludePathPatterns("/user/user/login")//排除用户登录
+                .excludePathPatterns("/user/shop/status");//排除获取店铺状态
     }
 
     /**
@@ -66,26 +76,26 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     /**
      * 通过 knife4j 生成 用户端 接口文档
      */
-//    @Bean
-//    public Docket docketUser(){
-//        log.info("开始通过knife4j生成接口文档");
-//        ApiInfo apiInfo = new ApiInfoBuilder()
-//                .title("sky_take_out接口文档")
-//                .version("2.0")
-//                .description("sky_take_out接口文档")
-//                .build();
-//
-//        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-//                .groupName("用户端接口") //进行分组
-//                .apiInfo(apiInfo)
-//                .select()
-//                //指定生成接口需要扫描的包
-//                .apis(RequestHandlerSelectors.basePackage("com.hxl.controller.user"))
-//                .paths(PathSelectors.any())
-//                .build();
-//
-//        return docket;
-//    }
+    @Bean
+    public Docket docketUser(){
+        log.info("开始通过knife4j生成接口文档");
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("sky_take_out接口文档")
+                .version("2.0")
+                .description("sky_take_out接口文档")
+                .build();
+
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .groupName("用户端接口") //进行分组
+                .apiInfo(apiInfo)
+                .select()
+                //指定生成接口需要扫描的包
+                .apis(RequestHandlerSelectors.basePackage("com.hxl.controller.user"))
+                .paths(PathSelectors.any())
+                .build();
+
+        return docket;
+    }
 
     /**
      * TODO: 设置静态资源映射
