@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.ShoppingCartMapper">
+    <!-- 动态查询是否已存在该购物车记录 -->
+    <select id="queryShoppingCartExist" resultType="com.hxl.entity.ShoppingCart">
+        select * from shopping_cart
+            <where>
+                <if test="userId != null">
+                    and user_id = #{userId}
+                </if>
+                <if test="dishId != null">
+                    and dish_id = #{dishId}
+                </if>
+                <if test="setmealId != null">
+                    and setmeal_id = #{setmealId}
+                </if>
+                <if test="dishFlavor != null">
+                    and dish_flavor = #{dishFlavor}
+                </if>
+            </where>
+    </select>
+
+    <!-- 通用的更新方法 -->
+    <update id="updateShoppingCart">
+        update shopping_cart
+            <set>
+                <if test="name != null">
+                    , name = #{name}
+                </if>
+                <if test="image != null">
+                    , image = #{image}
+                </if>
+                <if test="number != null">
+                    , number = #{number}
+                </if>
+                <if test="amount != null">
+                    , amount = #{amount}
+                </if>
+            </set>
+                <where>
+                    <if test="dishId != null">
+                        and dish_id = #{dishId}
+                    </if>
+                    <if test="setmealId != null">
+                        and setmeal_id = #{setmealId}
+                    </if>
+                    <if test="userId != null">
+                        and user_id = #{userId}
+                    </if>
+                    <if test="dishFlavor != null">
+                        and dish_flavor = #{dishFlavor}
+                    </if>
+                </where>
+    </update>
+
+    <!-- 插入一条购物车的数据 -->
+    <insert id="insertShoppingCart">
+        insert into shopping_cart (name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time)
+            values (#{name}, #{image}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount}, #{creatTime})
+    </insert>
+</mapper>

@@ -69,4 +69,12 @@ public interface SetMealMapper {
      */
     @Select("select * from set_meal where status = 1 and category_id = #{categoryId}")
     List<SetMeal> querySetMealByCategoryId(Long categoryId);
+
+    /**
+     * 根据套餐id查询套餐基本信息
+     * @param setmealId 套餐id
+     * @return 返回套餐表的基本数据
+     */
+    @Select("select * from set_meal where id = #{setmealId}")
+    SetMeal querySetMealInfoById(Long setmealId);
 }
