@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ApiModel
+@ApiModel("地址簿表对应的相关接口")
 public class AddressBook implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -59,5 +59,5 @@ public class AddressBook implements Serializable {
     private String label;
 
     @ApiModelProperty("是否为默认地址")
-    private Integer idDefault;
+    private Integer isDefault;
 }

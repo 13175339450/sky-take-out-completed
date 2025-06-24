@@ -15,4 +15,10 @@ public class StatusConstant {
 
     //套餐 默认状态
     public static final Integer SET_MEAL_DEFAULT_STATUS = 1;
+
+    //地址 默认状态为 非默认地址
+    public static final Integer NOT_DEFAULT_ADDRESS = 0;
+
+    //地址 默认地址
+    public static final Integer DEFAULT_ADDRESS = 1;
 }

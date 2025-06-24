@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.AddressBookMapper">
+
+    <!-- 新增地址 -->
+    <insert id="insertAddressBook">
+        insert into address_book (user_id, consignee, sex, phone, province_code, province_name, city_code, city_name,
+                                  district_code, district_name, detail, label, is_default)
+        values (#{userId}, #{consignee}, #{sex}, #{phone}, #{provinceCode}, #{provinceName}, #{cityCode}, #{cityName},
+                #{districtCode}, #{districtName}, #{detail}, #{label}, #{isDefault})
+    </insert>
+
+    <!-- 更改地址的状态 -->
+    <update id="updateDefaultAddress">
+        update address_book
+        <set>
+            <if test="isDefault != null">
+                is_default = #{isDefault}
+            </if>
+        </set>
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </update>
+
+    <!-- 查询默认地址信息 -->
+    <select id="querySingleAddress" resultType="com.hxl.entity.AddressBook">
+        select * from address_book
+            <where>
+                <if test="userId != null">
+                    and user_id = #{userId}
+                </if>
+                <if test="isDefault != null">
+                    and is_default = #{isDefault}
+                </if>
+                <if test="id != null">
+                    and id = #{id}
+                </if>
+            </where>
+    </select>
+
+    <!-- 动态删除地址 -->
+    <delete id="deleteAddress">
+        delete from address_book
+            <where>
+                <if test="id != null">
+                    and id = #{id}
+                </if>
+                <if test="userId != null">
+                    and user_id = #{userId}
+                </if>
+            </where>
+    </delete>
+
+    <!-- 修改地址信息 -->
+    <update id="updateAddress">
+        update address_book
+        <set>
+            <if test="cityCode != null">
+                , city_code = #{cityCode}
+            </if>
+            <if test="cityName != null">
+                , city_name = #{cityName}
+            </if>
+            <if test="consignee != null">
+                , consignee = #{consignee}
+            </if>
+            <if test="detail != null">
+                , detail = #{detail}
+            </if>
+            <if test="districtCode != null">
+                , district_code = #{districtCode}
+            </if>
+            <if test="districtName != null">
+                , district_name = #{districtName}
+            </if>
+            <if test="isDefault != null">
+                , is_default = #{isDefault}
+            </if>
+            <if test="label != null">
+                , label = #{label}
+            </if>
+            <if test="phone != null">
+                , phone = #{phone}
+            </if>
+            <if test="provinceCode != null">
+                , province_code = #{provinceCode}
+            </if>
+            <if test="provinceName != null">
+                , province_name = #{provinceName}
+            </if>
+            <if test="sex != null">
+                , sex = #{sex}
+            </if>
+        </set>
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </update>
+</mapper>
