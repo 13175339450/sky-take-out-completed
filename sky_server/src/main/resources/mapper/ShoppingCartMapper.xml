@@ -7,58 +7,100 @@
     <!-- 动态查询是否已存在该购物车记录 -->
     <select id="queryShoppingCartExist" resultType="com.hxl.entity.ShoppingCart">
         select * from shopping_cart
-            <where>
-                <if test="userId != null">
-                    and user_id = #{userId}
-                </if>
-                <if test="dishId != null">
-                    and dish_id = #{dishId}
-                </if>
-                <if test="setmealId != null">
-                    and setmeal_id = #{setmealId}
-                </if>
-                <if test="dishFlavor != null">
-                    and dish_flavor = #{dishFlavor}
-                </if>
-            </where>
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+        </where>
     </select>
 
     <!-- 通用的更新方法 -->
     <update id="updateShoppingCart">
         update shopping_cart
-            <set>
-                <if test="name != null">
-                    , name = #{name}
-                </if>
-                <if test="image != null">
-                    , image = #{image}
-                </if>
-                <if test="number != null">
-                    , number = #{number}
-                </if>
-                <if test="amount != null">
-                    , amount = #{amount}
-                </if>
-            </set>
-                <where>
-                    <if test="dishId != null">
-                        and dish_id = #{dishId}
-                    </if>
-                    <if test="setmealId != null">
-                        and setmeal_id = #{setmealId}
-                    </if>
-                    <if test="userId != null">
-                        and user_id = #{userId}
-                    </if>
-                    <if test="dishFlavor != null">
-                        and dish_flavor = #{dishFlavor}
-                    </if>
-                </where>
+        <set>
+            <if test="number != null">
+                number = #{number}
+            </if>
+        </set>
+        <where>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+        </where>
     </update>
 
     <!-- 插入一条购物车的数据 -->
     <insert id="insertShoppingCart">
         insert into shopping_cart (name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time)
-            values (#{name}, #{image}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount}, #{creatTime})
+        values (#{name}, #{image}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount},
+                #{creatTime})
     </insert>
+
+    <!-- 根据当前用户id查询购物车信息 -->
+    <select id="queryShoppingCartByUserId" resultType="com.hxl.entity.ShoppingCart">
+        select *
+        from shopping_cart
+        where user_id = #{userId}
+    </select>
+
+    <!-- 动态条件查询商品数量 -->
+    <select id="getShoppingNumber" resultType="java.lang.Integer">
+        select number from shopping_cart
+        <where>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 动态删除购物车 -->
+    <delete id="deleteShoppingCart">
+        delete from shopping_cart
+        <where>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </delete>
+    <!-- 清空购物车 -->
+    <delete id="cleanShoppingCart">
+        delete from shopping_cart
+            where user_id = #{userId}
+    </delete>
 </mapper>

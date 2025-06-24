@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @ApiModel("添加购物车接口的DTO")
-public class ShoppingCartAddDTO implements Serializable {
+public class ShoppingCartAddOrSubDTO implements Serializable {
 
     @ApiModelProperty("口味")
     private String dishFlavor;
