@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,13 +49,14 @@ public class CategoryController {
      */
     @PostMapping
     @ApiOperation("新增分类的接口")
+    @CacheEvict(cacheNames = RedisNameConstant.CATEGORY_CACHE, allEntries = true)
     public Result addCategory(@RequestBody CategoryAddDTO categoryAddDTO) {
         log.info("新增分类: {}", categoryAddDTO);
 
         categoryService.addCategory(categoryAddDTO);
 
-        //删除redis缓存
-        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
+//        //删除redis缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
 
         return Result.success();
     }
@@ -64,13 +66,14 @@ public class CategoryController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("启用、禁用分类")
+    @CacheEvict(cacheNames = RedisNameConstant.CATEGORY_CACHE, allEntries = true)
     public Result startOrStopCategory(@PathVariable Integer status, Long id) {
         log.info("启用、禁用分类: {}, {}", status, id);
 
         categoryService.startOrStopCategory(status, id);
 
-        //删除redis缓存
-        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
+//        //删除redis缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
 
         return Result.success();
     }
@@ -110,13 +113,14 @@ public class CategoryController {
      */
     @DeleteMapping
     @ApiOperation("删除分类")
+    @CacheEvict(cacheNames = RedisNameConstant.CATEGORY_CACHE, allEntries = true)
     public Result deleteCategory(Long id) {
         log.info("删除分类: {}", id);
 
         categoryService.deleteCategory(id);
 
-        //删除redis缓存
-        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
+//        //删除redis缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.CATEGORY_CACHE);
 
         return Result.success();
     }

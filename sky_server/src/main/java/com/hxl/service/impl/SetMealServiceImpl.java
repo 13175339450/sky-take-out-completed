@@ -3,6 +3,7 @@ package com.hxl.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hxl.constant.MessageConstant;
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.SetMealAddDTO;
 import com.hxl.dto.SetMealEditDTO;
@@ -19,6 +20,7 @@ import com.hxl.vo.SetMealPageVO;
 import com.hxl.vo.SetMealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -178,6 +180,7 @@ public class SetMealServiceImpl implements SetMealService {
      * 根据分类id查询套餐信息
      */
     @Override
+    @Cacheable(cacheNames = RedisNameConstant.SET_MEAL_CACHE, key = "#categoryId")
     public List<SetMeal> querySetMealByCategoryId(Long categoryId) {
 
         //根据分类id查询套餐信息 启售中的套餐
@@ -188,6 +191,7 @@ public class SetMealServiceImpl implements SetMealService {
      * 根据套餐id 查询菜品信息 多表联查
      */
     @Override
+    @Cacheable(cacheNames = RedisNameConstant.SET_MEAL_DISH_CACHE, key = "#id")
     public List<DishItemVO> queryDishBySetMealId(Long id) {
         //根据套餐id查询菜品信息 可以包括停售的
         return setMealDishMapper.queryDishBySetMealId(id);

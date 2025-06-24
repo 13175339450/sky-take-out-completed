@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class SetMealController {
      */
     @PostMapping
     @ApiOperation("新增套餐")
+    @CacheEvict(cacheNames = RedisNameConstant.SET_MEAL_CACHE, allEntries = true)
     public Result addSeaMeal(@RequestBody SetMealAddDTO setMealAddDTO) {
         log.info("新增套餐: {}", setMealAddDTO);
 
@@ -66,6 +68,7 @@ public class SetMealController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("套餐起售、停售")
+    @CacheEvict(cacheNames = RedisNameConstant.SET_MEAL_CACHE, allEntries = true)
     public Result startOrStopSetMeal(@PathVariable Integer status, Long id) {
         log.info("套餐起售、停售: {}, {}", status, id);
 
@@ -95,15 +98,19 @@ public class SetMealController {
      */
     @PutMapping
     @ApiOperation("修改套餐")
+    @CacheEvict(
+            cacheNames = {RedisNameConstant.SET_MEAL_CACHE, RedisNameConstant.SET_MEAL_DISH_CACHE },
+            allEntries = true
+    )
     public Result editSetMeal(@RequestBody SetMealEditDTO setMealEditDTO) {
         log.info("修改套餐: {}", setMealEditDTO);
 
         setMealService.editSetMeal(setMealEditDTO);
 
-        //清空套餐缓存
-        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
-        //清空套餐绑定的菜品缓存
-        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_DISH_CACHE);
+//        //清空套餐缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
+//        //清空套餐绑定的菜品缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_DISH_CACHE);
 
         return Result.success();
     }
@@ -113,15 +120,19 @@ public class SetMealController {
      */
     @DeleteMapping
     @ApiOperation("批量删除套餐")
+    @CacheEvict(
+            cacheNames = {RedisNameConstant.SET_MEAL_CACHE, RedisNameConstant.SET_MEAL_DISH_CACHE },
+            allEntries = true
+    )
     public Result deleteSetMealBatch(@RequestParam List<Long> ids){
         log.info("批量删除套餐: {}", ids);
 
         setMealService.deleteSetMealBatch(ids);
 
-        //清空套餐缓存
-        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
-        //清空套餐绑定的菜品缓存
-        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_DISH_CACHE);
+//        //清空套餐缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_CACHE);
+//        //清空套餐绑定的菜品缓存
+//        redisCacheUtil.flushCache(RedisNameConstant.SET_MEAL_DISH_CACHE);
 
         return Result.success();
     }

@@ -46,27 +46,28 @@ public class DishController {
     public Result<List<DishVO>> queryDishByCategoryId(Long categoryId){
         log.info("根据categoryId查询菜品信息: {}", categoryId);
 
-        String key = RedisNameConstant.DISH_CACHE + categoryId;
-        //判断redis里有没有缓存
-        String json = stringRedisTemplate.opsForValue().get(key);
-        List<DishVO> vo = null;
-        //存在这个缓存key值
-        if (json != null){
-            //获取缓存
-            try {
-                vo = objectMapper.readValue(json, new TypeReference<List<DishVO>>() {
-                });
-                log.info("从redis里读取菜品缓存:key为 {}", key);
-                //直接返回
-                return Result.success(vo);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        String key = RedisNameConstant.DISH_CACHE + categoryId;
+//        //判断redis里有没有缓存
+//        String json = stringRedisTemplate.opsForValue().get(key);
+//        //存在这个缓存key值
+//        if (json != null){
+//            //获取缓存
+//            try {
+//                vo = objectMapper.readValue(json, new TypeReference<List<DishVO>>() {
+//                });
+//                log.info("从redis里读取菜品缓存:key为 {}", key);
+//                //直接返回
+//                return Result.success(vo);
+//            } catch (JsonProcessingException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
 
+        List<DishVO> vo = null;
+        //在下面方法里进行SpringCache
         vo = dishService.queryDishAndFlavorsByCategoryId(categoryId);
         //添加进redis
-        redisCacheUtil.addCache(key, vo);
+//        redisCacheUtil.addCache(key, vo);
 
         return Result.success(vo);
     }

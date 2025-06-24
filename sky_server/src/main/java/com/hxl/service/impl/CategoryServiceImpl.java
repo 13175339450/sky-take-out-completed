@@ -3,6 +3,7 @@ package com.hxl.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hxl.constant.MessageConstant;
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.CategoryAddDTO;
 import com.hxl.dto.CategoryEditDTO;
@@ -17,6 +18,7 @@ import com.hxl.service.CategoryService;
 import com.hxl.vo.CategoryPageVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -104,15 +106,16 @@ public class CategoryServiceImpl implements CategoryService {
      * 根据分类类型查询分类集合
      */
     @Override
+    //TODO: key不能为null，否则会抛出异常并且缓存失败! 此时用三元表达式来替换值 格式为 preName::all
+    @Cacheable(cacheNames = RedisNameConstant.CATEGORY_CACHE, key = "#type == null ? 'all' : #type")
     public List<Category> queryCategoryByType(Integer type) {
-
-        //检查Redis里是否
 
         //封装实体对象
         Category category = Category.builder().type(type).build();
 
         //定义通用查询方法 停售的不能被查询
-        return categoryMapper.queryCategory(category);
+        List<Category> result = categoryMapper.queryCategory(category);
+        return result;
     }
 
     /**

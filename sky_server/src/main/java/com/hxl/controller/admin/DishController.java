@@ -15,6 +15,7 @@ import io.swagger.annotations.License;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,13 +51,14 @@ public class DishController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("菜品启售、停售")
+    @CacheEvict(cacheNames = RedisNameConstant.DISH_CACHE, allEntries = true)
     public Result startOrStopDish(@PathVariable Integer status, Long id) {
         log.info("菜品启售、停售: {}, {}", status, id);
 
         dishService.startOrStopDish(status, id);
 
-        //清空全部 因为原redis数据已不完整
-        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
+//        //清空全部 因为原redis数据已不完整
+//        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }
@@ -66,13 +68,14 @@ public class DishController {
      */
     @PostMapping
     @ApiOperation("新增菜品")
+    @CacheEvict(cacheNames = RedisNameConstant.DISH_CACHE, allEntries = true)
     public Result addDish(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品: {}", dishDTO);
 
         dishService.addDish(dishDTO);
 
-        //清空全部 因为原redis数据已不完整
-        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
+//        //清空全部 因为原redis数据已不完整
+//        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }
@@ -95,13 +98,14 @@ public class DishController {
      */
     @PutMapping
     @ApiOperation("修改菜品")
+    @CacheEvict(cacheNames = RedisNameConstant.DISH_CACHE, allEntries = true)
     public Result updateDish(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品: {}", dishDTO);
 
         dishService.updateDish(dishDTO);
 
-        //清空全部 因为原redis数据已不完整
-        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
+//        //清空全部 因为原redis数据已不完整
+//        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }
@@ -127,13 +131,14 @@ public class DishController {
      */
     @DeleteMapping
     @ApiOperation("批量删除菜品")
+    @CacheEvict(cacheNames = RedisNameConstant.DISH_CACHE, allEntries = true)
     public Result deleteDishBatch(@RequestParam List<Long> ids){
         log.info("批量删除菜品: {}", ids);
 
         dishService.deleteDishBatch(ids);
 
-        //清空全部 因为原redis数据已不完整
-        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
+//        //清空全部 因为原redis数据已不完整
+//        redisCacheUtil.flushCache(RedisNameConstant.DISH_CACHE);
 
         return Result.success();
     }

@@ -3,6 +3,7 @@ package com.hxl.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hxl.constant.MessageConstant;
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.dto.DishDTO;
 import com.hxl.dto.DishPageDTO;
@@ -19,6 +20,7 @@ import com.hxl.vo.DishPageVO;
 import com.hxl.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -216,6 +218,7 @@ public class DishServiceImpl implements DishService {
      * 用户端的 根据分类id 查询菜品及其口味信息
      */
     @Override
+    @Cacheable(cacheNames = RedisNameConstant.DISH_CACHE, key = "#categoryId")
     public List<DishVO> queryDishAndFlavorsByCategoryId(Long categoryId) {
         //先根据分类id查询到相应的菜品(已起售的)集合 调用通用的方法
         Dish dish = Dish.builder().categoryId(categoryId).build();
