@@ -13,9 +13,17 @@ public interface UserMapper {
     User queryUserByOpenid(String openid);
 
     /**
-     * 查询用户信息到用户表
+     * 添加用户信息到用户表
      *
      * @param user
      */
     int insertUser(User user);
+
+    /**
+     * 查询用户信息
+     * @param userId
+     * @return
+     */
+    @Select("select * from user where id = #{userId}")
+    User queryUserById(Long userId);
 }

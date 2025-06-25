@@ -21,4 +21,9 @@ public class StatusConstant {
 
     //地址 默认地址
     public static final Integer DEFAULT_ADDRESS = 1;
+
+    //订单支付方式 1微信 2支付宝
+    public static final Integer PAY_WECHAT = 1;
+
+    public static final Integer PAY_ALI = 2;
 }

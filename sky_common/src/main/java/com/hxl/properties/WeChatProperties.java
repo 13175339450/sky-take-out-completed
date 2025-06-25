@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 微信支付相关配置属性类
- * 从配置文件中读取以 "sky.wechat" 为前缀的配置项
+ * 从配置文件中读取以 "hxl.wechat" 为前缀的配置项
  */
 @Component
 @ConfigurationProperties(prefix = "hxl.wechat")

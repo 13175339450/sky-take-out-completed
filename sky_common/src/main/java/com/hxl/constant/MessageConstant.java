@@ -35,4 +35,8 @@ public class MessageConstant {
     public static final String UPLOAD_FAILED = "文件上传失败!";
 
     public static final String LOGIN_FAIL = "登录失败!";
+
+    public static final String ADDRESS_IS_NULL = "地址不能为空!";
+
+    public static final String SHOPPING_CAR_IS_NULL = "购物车不能为空!";
 }

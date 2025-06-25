@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = *接口* 的全限定符 -->
+<mapper namespace="com.hxl.mapper.OrderDetailMapper">
+
+    <!-- 批量插入多条订单明细信息 -->
+    <insert id="insertOrderDetailBatch">
+        insert into sky_take_out.order_detail
+        (name, image, order_id, dish_id, setmeal_id, dish_flavor, number, amount) values
+        <foreach collection="orderDetailList" item="o" separator=",">
+            (#{o.name}, #{o.image}, #{o.orderId}, #{o.dishId}, #{o.setmealId}, #{o.dishFlavor}, #{o.number}, #{o.amount})
+        </foreach>
+    </insert>
+</mapper>
