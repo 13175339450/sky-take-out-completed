@@ -88,10 +88,23 @@ public class OrderController {
      */
     @PostMapping("/repetition/{id}")
     @ApiModelProperty("再来一单")
-    public Result repetitionOrder(@PathVariable Long id){
+    public Result repetitionOrder(@PathVariable Long id) {
         log.info("再来一单: {}", id);
 
         orderService.repetitionOrder(id);
+
+        return Result.success();
+    }
+
+    /**
+     * 取消订单
+     */
+    @PutMapping("/cancel/{id}")
+    @ApiOperation("取消订单")
+    public Result cancelOrder(@PathVariable Long id){
+        log.info("取消订单: {}", id);
+
+        orderService.cancelOrder(id);
 
         return Result.success();
     }

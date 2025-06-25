@@ -175,8 +175,8 @@ public class OrderServiceImpl implements OrderService {
                 .status(Orders.TO_BE_CONFIRMED)
                 .payStatus(Orders.PAID)
                 .checkoutTime(LocalDateTime.now())
-                .packAmount(ordersDB.getPackAmount()) //TODO: 修复bug 因为packAmount为int类型 不赋值的话 默认为0 而 0 != null 所以会更新为0
-                .tablewareNumber(ordersDB.getTablewareNumber())//TODO: 修复bug 同上
+//                .packAmount(ordersDB.getPackAmount()) //TODO: 修复bug 因为packAmount为int类型 不赋值的话 默认为0 而 0 != null 所以会更新为0
+//                .tablewareNumber(ordersDB.getTablewareNumber())//TODO: 修复bug 同上
                 .build();
 
         orderMapper.update(orders);
@@ -267,5 +267,20 @@ public class OrderServiceImpl implements OrderService {
         }
         //批量插入
         shoppingCartMapper.insertShoppingCartBatch(shoppingCarts);
+    }
+
+    /**
+     * 取消订单
+     */
+    @Override
+    public void cancelOrder(Long id) {
+        Orders order = Orders.builder()
+                .id(id)//订单id
+                .status(Orders.CANCELLED)//已取消
+                .payStatus(Orders.REFUND)//已退款
+                .cancelReason(MessageConstant.USER_CANCEL)//取消原因
+                .cancelTime(LocalDateTime.now()).build();
+
+        orderMapper.update(order);
     }
 }
