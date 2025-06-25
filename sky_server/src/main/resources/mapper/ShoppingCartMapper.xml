@@ -51,7 +51,7 @@
     <insert id="insertShoppingCart">
         insert into shopping_cart (name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time)
         values (#{name}, #{image}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount},
-                #{creatTime})
+                #{createTime})
     </insert>
 
     <!-- 根据当前用户id查询购物车信息 -->
@@ -103,4 +103,15 @@
         delete from shopping_cart
             where user_id = #{userId}
     </delete>
+
+    <!-- 批量插入购物车 -->
+    <insert id="insertShoppingCartBatch">
+        insert into shopping_cart
+        (name, image, user_id, dish_id, setmeal_id,
+         dish_flavor, number, amount, create_time) values
+        <foreach collection="shoppingCarts" item="sc" separator=",">
+            (#{sc.name}, #{sc.image}, #{sc.userId}, #{sc.dishId}, #{sc.setmealId},
+             #{sc.dishFlavor}, #{sc.number}, #{sc.amount}, #{sc.createTime})
+        </foreach>
+    </insert>
 </mapper>

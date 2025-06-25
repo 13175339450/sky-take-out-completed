@@ -2,17 +2,22 @@ package com.hxl.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.hxl.constant.MessageConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.context.BaseContext;
+import com.hxl.dto.HistoryOrdersDTO;
 import com.hxl.dto.OrderPaymentDTO;
 import com.hxl.dto.OrderSubmitDTO;
 import com.hxl.entity.*;
 import com.hxl.exception.OrderSubmitFailException;
 import com.hxl.mapper.*;
+import com.hxl.result.PageResult;
 import com.hxl.service.OrderService;
 import com.hxl.vo.OrderPaymentVO;
 import com.hxl.vo.OrderSubmitVO;
+import com.hxl.vo.OrderVO;
 import com.hxl.webSocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,6 +175,8 @@ public class OrderServiceImpl implements OrderService {
                 .status(Orders.TO_BE_CONFIRMED)
                 .payStatus(Orders.PAID)
                 .checkoutTime(LocalDateTime.now())
+                .packAmount(ordersDB.getPackAmount()) //TODO: 修复bug 因为packAmount为int类型 不赋值的话 默认为0 而 0 != null 所以会更新为0
+                .tablewareNumber(ordersDB.getTablewareNumber())//TODO: 修复bug 同上
                 .build();
 
         orderMapper.update(orders);
@@ -185,5 +192,80 @@ public class OrderServiceImpl implements OrderService {
         //3.发送给服务端
         //在单个 TCP 连接上进行全双工通信的协议，能在客户端和服务器之间建立实时连接
         webSocketServer.sendToAllClient(json);
+    }
+
+    /**
+     * 查询订单的详情信息
+     */
+    @Override
+    public OrderVO queryOrderDetail(Long id) {
+        OrderVO orderVO = new OrderVO();
+
+        //查询订单的基本信息
+        Orders orders = orderMapper.queryOrderById(id);
+
+        //查询订单的详细信息
+        List<OrderDetail> orderDetailList = orderDetailMapper.queryOrderDetailByOrderId(id);
+
+        //属性拷贝
+        BeanUtils.copyProperties(orders, orderVO);
+        //TODO: bug修复 属性用赋值 不能进行属性拷贝!!!
+        orderVO.setOrderDetailList(orderDetailList);
+
+        return orderVO;
+    }
+
+    /**
+     * 历史订单查询
+     */
+    @Override
+    public PageResult queryHistoryOrders(HistoryOrdersDTO historyOrdersDTO) {
+        //设置分页数据
+        PageHelper.startPage(historyOrdersDTO.getPage(), historyOrdersDTO.getPageSize());
+
+        //分页查询 基本信息
+        Orders condition = Orders.builder().status(historyOrdersDTO.getStatus()).userId(BaseContext.getCurrentId()).build();
+        Page<Orders> page = orderMapper.historyOrdersPage(condition);
+
+        //获取基本信息
+        long total = page.getTotal();
+        List<Orders> orders = page.getResult();
+
+        //对每一个历史订单进行单独填充订单细节的内容
+        List<OrderVO> records = new ArrayList<>();
+        if (orders != null && !orders.isEmpty()){
+            for (Orders o : orders) {
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(o, orderVO);
+                //根据订单id查询内容
+                List<OrderDetail> list = orderDetailMapper.queryOrderDetailByOrderId(o.getId());
+                orderVO.setOrderDetailList(list);
+                //添加结果
+                records.add(orderVO);
+            }
+        }
+
+        return new PageResult(total, records);
+    }
+
+    /**
+     * 再来一单
+     */
+    @Override
+    public void repetitionOrder(Long id) {
+        //把上一次的单的 订单明细 再重新加入购物车 根据订单id
+        List<OrderDetail> orderDetailList = orderDetailMapper.queryOrderDetailByOrderId(id);
+
+        //将这些内容重新插入购物车表里 但要自己填充 userId、createTime
+        List<ShoppingCart> shoppingCarts = new ArrayList<>();
+        for (OrderDetail orderDetail : orderDetailList) {
+            //填充 userId、createTime
+            ShoppingCart shoppingCart = ShoppingCart.builder().userId(BaseContext.getCurrentId()).createTime(LocalDateTime.now()).build();
+            //属性拷贝
+            BeanUtils.copyProperties(orderDetail, shoppingCart);
+            shoppingCarts.add(shoppingCart);
+        }
+        //批量插入
+        shoppingCartMapper.insertShoppingCartBatch(shoppingCarts);
     }
 }

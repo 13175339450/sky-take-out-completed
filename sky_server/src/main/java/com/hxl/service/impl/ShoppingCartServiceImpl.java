@@ -49,7 +49,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCart = ShoppingCart.builder()
                     .userId(BaseContext.getCurrentId())
                     .dishFlavor(shoppingCartAddOrSubDTO.getDishFlavor())
-                    .creatTime(LocalDateTime.now())
+                    .createTime(LocalDateTime.now())
                     .dishId(shoppingCartAddOrSubDTO.getDishId())
                     .setmealId(shoppingCartAddOrSubDTO.getSetmealId())
                     .number(1).build();

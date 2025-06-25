@@ -52,4 +52,11 @@ public interface ShoppingCartMapper {
      * @param userId
      */
     int cleanShoppingCart(Long userId);
+
+    /**
+     * 批量插入购物车
+     * @param shoppingCarts 购物车数据集合
+     * @return 返回插入成功的数量
+     */
+    int insertShoppingCartBatch(List<ShoppingCart> shoppingCarts);
 }

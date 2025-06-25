@@ -51,4 +51,18 @@
         </set>
         where id=#{id}
     </update>
+
+    <!-- 分页查询历史订单数据 -->
+    <select id="historyOrdersPage" resultType="com.hxl.entity.Orders">
+        select * from orders
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by order_time desc
+    </select>
 </mapper>

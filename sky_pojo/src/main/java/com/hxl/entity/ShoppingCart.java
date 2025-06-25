@@ -24,7 +24,7 @@ public class ShoppingCart implements Serializable {
     private BigDecimal amount;
 
     @ApiModelProperty("创建时间")
-    private LocalDateTime creatTime;
+    private LocalDateTime createTime;
 
     @ApiModelProperty("菜品口味")
     private String dishFlavor;

@@ -8,7 +8,7 @@ logging:
   # 配置各包路径的日志级别
   level:
     com:
-      sky:
+      hxl:
         # Mapper层(数据访问层)使用DEBUG级别，会输出SQL语句和参数等详细信息
         mapper: debug
         # Service层(业务逻辑层)使用INFO级别，输出关键业务操作信息

@@ -1,5 +1,6 @@
 package com.hxl.mapper;
 
+import com.github.pagehelper.Page;
 import com.hxl.entity.Orders;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -32,4 +33,19 @@ public interface OrderMapper {
      */
     @Select("select * from orders where number = #{orderNumber}")
     Orders getByNumber(String outTradeNo);
+
+    /**
+     * 查询订单的基本信息
+     * @param id 订单id
+     * @return 返回订单的基本信息
+     */
+    @Select("select * from orders where id = #{id}")
+    Orders queryOrderById(Long id);
+
+    /**
+     * 分页查询历史订单数据
+     * @param orders 条件封装
+     * @return 返回分页查询数据
+     */
+   Page<Orders> historyOrdersPage(Orders orders);
 }
