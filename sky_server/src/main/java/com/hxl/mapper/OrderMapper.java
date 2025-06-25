@@ -1,7 +1,9 @@
 package com.hxl.mapper;
 
 import com.github.pagehelper.Page;
+import com.hxl.dto.OrderSearchDTO;
 import com.hxl.entity.Orders;
+import com.hxl.vo.OrderVO;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -48,4 +50,11 @@ public interface OrderMapper {
      * @return 返回分页查询数据
      */
    Page<Orders> historyOrdersPage(Orders orders);
+
+    /**
+     * 条件查询 -- 管理端分页
+     * @param orderSearchDTO 分页条件
+     * @return 分页结果
+     */
+    Page<OrderVO> conditionSearch(OrderSearchDTO orderSearchDTO);
 }

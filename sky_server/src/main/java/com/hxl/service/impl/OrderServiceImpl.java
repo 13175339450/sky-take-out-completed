@@ -9,6 +9,7 @@ import com.hxl.constant.StatusConstant;
 import com.hxl.context.BaseContext;
 import com.hxl.dto.HistoryOrdersDTO;
 import com.hxl.dto.OrderPaymentDTO;
+import com.hxl.dto.OrderSearchDTO;
 import com.hxl.dto.OrderSubmitDTO;
 import com.hxl.entity.*;
 import com.hxl.exception.OrderSubmitFailException;
@@ -282,5 +283,35 @@ public class OrderServiceImpl implements OrderService {
                 .cancelTime(LocalDateTime.now()).build();
 
         orderMapper.update(order);
+    }
+
+    /**
+     * 订单搜索
+     */
+    @Override
+    public PageResult conditionSearch(OrderSearchDTO orderSearchDTO) {
+        //设置分页
+        PageHelper.startPage(orderSearchDTO.getPage(), orderSearchDTO.getPageSize());
+
+        //分页查询
+        Page<OrderVO> page = orderMapper.conditionSearch(orderSearchDTO);
+
+        //获取结果
+        long total = page.getTotal();
+        List<OrderVO> records = page.getResult();
+
+        //为每个订单构建 简要的菜品数据描述 orderDishes的值
+        for (OrderVO order : records) {
+            //根据订单id去查找 订单明细数据
+            List<OrderDetail> orderDetailList = orderDetailMapper.queryOrderDetailByOrderId(order.getId());
+            //组合成字符串
+            String orderDishes = "";
+            for (OrderDetail orderDetail : orderDetailList) {
+                orderDishes += orderDetail.getName() + " * " + orderDetail.getAmount() + " ;";
+            }
+            order.setOrderDishes(orderDishes);
+        }
+
+        return new PageResult(total, records);
     }
 }

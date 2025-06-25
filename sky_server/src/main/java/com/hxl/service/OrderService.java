@@ -2,6 +2,7 @@ package com.hxl.service;
 
 import com.hxl.dto.HistoryOrdersDTO;
 import com.hxl.dto.OrderPaymentDTO;
+import com.hxl.dto.OrderSearchDTO;
 import com.hxl.dto.OrderSubmitDTO;
 import com.hxl.entity.Orders;
 import com.hxl.result.PageResult;
@@ -55,4 +56,12 @@ public interface OrderService {
      * @param id 订单id
      */
     void cancelOrder(Long id);
+
+    /**
+     * 订单搜索 -- 分页
+     * @param orderSearchDTO 查询条件
+     * @return 分页数据
+     */
+    PageResult conditionSearch(OrderSearchDTO orderSearchDTO);
+
 }
