@@ -1,11 +1,14 @@
 package com.hxl.service.impl;
 
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.constant.StatusConstant;
 import com.hxl.context.BaseContext;
 import com.hxl.entity.AddressBook;
 import com.hxl.mapper.AddressBookMapper;
 import com.hxl.service.AddressBookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,7 @@ public class AddressBookServiceImpl implements AddressBookService {
     /**
      * 获取当前用户的所有地址簿信息
      */
+    @Cacheable(cacheNames = RedisNameConstant.ADDRESS_BOOK_ALL, key = "#userId")
     @Override
     public List<AddressBook> getAddressBookList(Long userId) {
         //根据userId查询用户的所有地址簿信息
@@ -28,6 +32,7 @@ public class AddressBookServiceImpl implements AddressBookService {
     /**
      * 新增地址
      */
+    @CacheEvict(cacheNames = RedisNameConstant.ADDRESS_BOOK_ALL, allEntries = true)
     @Override
     public void addAddress(AddressBook addressBook) {
         //手动配置userId
@@ -45,6 +50,9 @@ public class AddressBookServiceImpl implements AddressBookService {
      * @param id 地址id
      */
     @Override
+    //删除地址簿和默认地址缓存
+    @CacheEvict(cacheNames = {RedisNameConstant.ADDRESS_BOOK_ALL, RedisNameConstant.DEFAULT_ADDRESS},
+            allEntries = true)
     public void setDefaultAddress(Long id) {
         //默认地址只能有一个，所以设置之前把当前用户的所有地址都设置为 非默认
         // 利用实体类 不存入地址id 将所有地址的状态设置为非默认
@@ -64,6 +72,7 @@ public class AddressBookServiceImpl implements AddressBookService {
      * 查询当前用户的默认地址
      */
     @Override
+    @Cacheable(cacheNames = RedisNameConstant.DEFAULT_ADDRESS, key = "#userId")
     public AddressBook getDefaultAddress(Long userId) {
         AddressBook addressBook = AddressBook.builder().userId(userId).isDefault(StatusConstant.DEFAULT_ADDRESS).build();
         //
@@ -84,6 +93,9 @@ public class AddressBookServiceImpl implements AddressBookService {
      * 根据地址id删除地址
      */
     @Override
+    //删除地址簿和默认地址缓存
+    @CacheEvict(cacheNames = {RedisNameConstant.ADDRESS_BOOK_ALL, RedisNameConstant.DEFAULT_ADDRESS},
+            allEntries = true)
     public void deleteAddressById(Long id) {
         AddressBook addressBook = AddressBook.builder().id(id).userId(BaseContext.getCurrentId()).build();
 
@@ -95,6 +107,9 @@ public class AddressBookServiceImpl implements AddressBookService {
      * 修改地址
      */
     @Override
+    //删除地址簿和默认地址缓存
+    @CacheEvict(cacheNames = {RedisNameConstant.ADDRESS_BOOK_ALL, RedisNameConstant.DEFAULT_ADDRESS},
+            allEntries = true)
     public void updateAddress(AddressBook addressBook) {
         addressBook.setUserId(BaseContext.getCurrentId());
 

@@ -23,6 +23,7 @@ public class AddressBookController {
 
     /**
      * 查询当前用户用的所有地址信息
+     *      SpringCache
      */
     @GetMapping("/list")
     @ApiOperation("查询当前用户用的所有地址信息")
