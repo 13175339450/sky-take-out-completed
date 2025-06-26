@@ -3,6 +3,7 @@ package com.hxl.mapper;
 import com.github.pagehelper.Page;
 import com.hxl.dto.OrderSearchDTO;
 import com.hxl.entity.Orders;
+import com.hxl.vo.OrderStatisticsVO;
 import com.hxl.vo.OrderVO;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -57,4 +58,10 @@ public interface OrderMapper {
      * @return 分页结果
      */
     Page<OrderVO> conditionSearch(OrderSearchDTO orderSearchDTO);
+
+    /**
+     * 获取各个状态的订单数量
+     * @return 各个状态订单数量的实体类
+     */
+    OrderStatisticsVO getAnyOrderStatusNumber();
 }

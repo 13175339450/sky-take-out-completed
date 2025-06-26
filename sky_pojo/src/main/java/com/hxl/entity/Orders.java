@@ -38,6 +38,12 @@ public class Orders implements Serializable {
     public static final Integer PAID = 1;
     public static final Integer REFUND = 2;
 
+    /**
+     * 配送状态 1.立即送出 0选择时间
+     */
+    public static final Integer DELIVERY = 1;
+    public static final Integer NOT_DELIVERY = 0;
+
     //支付方式 1微信，2支付宝
     @ApiModelProperty("支付方式")
     private Integer payMethod;
@@ -132,4 +138,5 @@ public class Orders implements Serializable {
     //餐具数量状态  1按餐量提供  0选择具体数量
     @ApiModelProperty("餐具数量状态")
     private Integer tablewareStatus;
+
 }

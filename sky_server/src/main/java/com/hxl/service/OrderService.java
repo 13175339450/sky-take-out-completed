@@ -7,6 +7,7 @@ import com.hxl.dto.OrderSubmitDTO;
 import com.hxl.entity.Orders;
 import com.hxl.result.PageResult;
 import com.hxl.vo.OrderPaymentVO;
+import com.hxl.vo.OrderStatisticsVO;
 import com.hxl.vo.OrderSubmitVO;
 import com.hxl.vo.OrderVO;
 
@@ -64,4 +65,39 @@ public interface OrderService {
      */
     PageResult conditionSearch(OrderSearchDTO orderSearchDTO);
 
+    /**
+     * 各个状态的订单数量
+     * @return 返回各订单状态的数量
+     */
+    OrderStatisticsVO getAnyOrderStatusNumber();
+
+    /**
+     * 接单
+     * @param orders 订单信息
+     */
+    void confirmOrder(Orders orders);
+
+    /**
+     * 派送订单
+     * @param id 订单id
+     */
+    void deliveryOrder(Long id);
+
+    /**
+     * 完成订单
+     * @param id 订单id
+     */
+    void completedOrder(Long id);
+
+    /**
+     * 取消订单
+     * @param order 取消订单的信息
+     */
+    void cancelUserOrder(Orders order);
+
+    /**
+     * 拒单
+     * @param order 拒单信息
+     */
+    void rejectOrder(Orders order);
 }

@@ -17,11 +17,13 @@ import com.hxl.mapper.*;
 import com.hxl.result.PageResult;
 import com.hxl.service.OrderService;
 import com.hxl.vo.OrderPaymentVO;
+import com.hxl.vo.OrderStatisticsVO;
 import com.hxl.vo.OrderSubmitVO;
 import com.hxl.vo.OrderVO;
 import com.hxl.webSocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,8 +65,8 @@ public class OrderServiceImpl implements OrderService {
     public OrderSubmitVO submitOrder(OrderSubmitDTO orderSubmitDTO) {
         //校验用户提交的数据是否合法 地址不能为空，购物车不能为空 前端传过来的地址簿id一定不为空
         AddressBook condition = AddressBook.builder().id(orderSubmitDTO.getAddressBookId()).build();
-        AddressBook addressBook= addressBookMapper.querySingleAddress(condition);
-        if (addressBook == null){
+        AddressBook addressBook = addressBookMapper.querySingleAddress(condition);
+        if (addressBook == null) {
             //地址为空
             throw new OrderSubmitFailException(MessageConstant.ADDRESS_IS_NULL);
         }
@@ -74,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
         Long userId = BaseContext.getCurrentId();
         List<ShoppingCart> shoppingCarts = shoppingCartMapper.queryShoppingCartByUserId(userId);
 
-        if (shoppingCarts == null || shoppingCarts.isEmpty()){
+        if (shoppingCarts == null || shoppingCarts.isEmpty()) {
             //购物车不能为空
             throw new OrderSubmitFailException(MessageConstant.SHOPPING_CAR_IS_NULL);
         }
@@ -234,7 +236,7 @@ public class OrderServiceImpl implements OrderService {
 
         //对每一个历史订单进行单独填充订单细节的内容
         List<OrderVO> records = new ArrayList<>();
-        if (orders != null && !orders.isEmpty()){
+        if (orders != null && !orders.isEmpty()) {
             for (Orders o : orders) {
                 OrderVO orderVO = new OrderVO();
                 BeanUtils.copyProperties(o, orderVO);
@@ -313,5 +315,76 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return new PageResult(total, records);
+    }
+
+    /**
+     * 各个状态的订单数量
+     *
+     * @return
+     */
+    @Override
+    public OrderStatisticsVO getAnyOrderStatusNumber() {
+        //利用条件聚合 + SUM函数获取 需要取别名
+        return orderMapper.getAnyOrderStatusNumber();
+    }
+
+    /**
+     * 接单
+     */
+    @Override
+    public void confirmOrder(Orders orders) {
+        //要修改的订单信息的封装类
+        orders.setStatus(Orders.CONFIRMED);//已接单
+        orderMapper.update(orders);
+    }
+
+    /**
+     * 派送订单
+     */
+    @Override
+    public void deliveryOrder(Long id) {
+        Orders order = Orders.builder()
+                .id(id)
+                .status(Orders.DELIVERY_IN_PROGRESS)//派送中
+                .deliveryStatus(Orders.DELIVERY)//立即送出
+                .build();
+
+        orderMapper.update(order);
+    }
+
+    /**
+     * 完成订单
+     */
+    @Override
+    public void completedOrder(Long id) {
+        Orders order = Orders.builder().
+                id(id).
+                status(Orders.COMPLETED)
+                .deliveryTime(LocalDateTime.now()).build();
+
+        orderMapper.update(order);
+    }
+
+    /**
+     * 取消订单
+     */
+    @Override
+    public void cancelUserOrder(Orders order) {
+        order.setStatus(Orders.CANCELLED);//订单状态
+        order.setCancelTime(LocalDateTime.now());//取消时间
+
+        orderMapper.update(order);
+    }
+
+    /**
+     * 拒单
+     */
+    @Override
+    public void rejectOrder(Orders order) {
+        order.setStatus(Orders.CANCELLED);//已取消
+        order.setCancelTime(LocalDateTime.now());//取消时间
+        order.setPayStatus(Orders.REFUND);//已退
+
+        orderMapper.update(order);
     }
 }
