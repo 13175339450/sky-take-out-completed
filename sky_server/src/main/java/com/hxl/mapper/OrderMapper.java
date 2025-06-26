@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface OrderMapper {
     /**
@@ -64,4 +65,27 @@ public interface OrderMapper {
      * @return 各个状态订单数量的实体类
      */
     OrderStatisticsVO getAnyOrderStatusNumber();
+
+    /**
+     * 查询超时订单的id
+     * @param deadline 超时时间的晚
+     * @return 超时的订单id
+     */
+    List<Long> queryPayTimeOutOrder(LocalDateTime deadline);
+
+
+    /**
+     * 批量修改订单
+     * @param orderIds 订单id集合
+     * @param order 订单修改的数据
+     */
+    int updateOrderBatch(List<Long> orderIds, Orders order);
+
+    /**
+     * 获取显示派送中但已完成的订单
+     * @param status 派送状态
+     * @return 返回订单id集合
+     */
+    @Select("select id from orders where status = #{status}")
+    List<Long> queryDeliveryOrder(Integer status);
 }

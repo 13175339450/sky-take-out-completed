@@ -100,4 +100,10 @@ public interface OrderService {
      * @param order 拒单信息
      */
     void rejectOrder(Orders order);
+
+    /**
+     * 催单
+     * @param id 订单id
+     */
+    void reminderOrder(Long id);
 }

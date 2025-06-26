@@ -387,4 +387,12 @@ public class OrderServiceImpl implements OrderService {
 
         orderMapper.update(order);
     }
+
+    /**
+     * 催单
+     */
+    @Override
+    public void reminderOrder(Long id) {
+
+    }
 }

@@ -41,4 +41,6 @@ public class MessageConstant {
     public static final String SHOPPING_CAR_IS_NULL = "购物车不能为空!";
 
     public static final String USER_CANCEL = "用户取消";
+
+    public static final String PAY_TIME_OUT = "订单支付超时";
 }
