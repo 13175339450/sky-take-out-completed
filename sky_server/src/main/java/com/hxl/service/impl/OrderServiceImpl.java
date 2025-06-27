@@ -12,6 +12,7 @@ import com.hxl.dto.OrderPaymentDTO;
 import com.hxl.dto.OrderSearchDTO;
 import com.hxl.dto.OrderSubmitDTO;
 import com.hxl.entity.*;
+import com.hxl.exception.OrderBusinessException;
 import com.hxl.exception.OrderSubmitFailException;
 import com.hxl.mapper.*;
 import com.hxl.result.PageResult;
@@ -20,10 +21,9 @@ import com.hxl.vo.OrderPaymentVO;
 import com.hxl.vo.OrderStatisticsVO;
 import com.hxl.vo.OrderSubmitVO;
 import com.hxl.vo.OrderVO;
-import com.hxl.webSocket.WebSocketServer;
+import com.hxl.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -160,6 +160,16 @@ public class OrderServiceImpl implements OrderService {
         Integer OrderStatus = Orders.TO_BE_CONFIRMED;  //订单状态，待接单
         LocalDateTime check_out_time = LocalDateTime.now();//更新支付时间
         orderMapper.updateStatus(OrderStatus, OrderPaidStatus, check_out_time, this.orders.getId());
+
+        //通过websocket向客户端浏览器 推送消息 type orderId content
+        Map map = new HashMap();
+        map.put("type", 1);//1为来单提醒  2为客户催单
+        map.put("orderId", this.orders.getId());
+        map.put("content", "订单号: " + this.orders.getNumber());
+        //将对象数据封装为json对象 然后发送
+        String json = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
+
         return vo;
     }
 
@@ -384,6 +394,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Orders.CANCELLED);//已取消
         order.setCancelTime(LocalDateTime.now());//取消时间
         order.setPayStatus(Orders.REFUND);//已退
+        order.setCancelReason(order.getRejectionReason());//设置取消理由
 
         orderMapper.update(order);
     }
@@ -393,6 +404,23 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void reminderOrder(Long id) {
+        //根据订单id查询订单状态
+        Orders order = orderMapper.queryOrderById(id);
+        if (order == null){
+            //订单不存在异常
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_EXIST);
+        }
 
+        //封装数据 type orderId content
+        Map map = new HashMap();
+        map.put("type", 2);//1为来单提醒  2为客户催单
+        map.put("orderId", id);//订单id
+        map.put("content", "订单号: " + order.getNumber());//消息内容 订单号
+
+        //将消息对象转换为json格式
+        String json = JSONObject.toJSONString(map);
+
+        //发送消息给客户端
+        webSocketServer.sendToAllClient(json);
     }
 }

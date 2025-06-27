@@ -1,4 +1,4 @@
-package com.hxl.webSocket;
+package com.hxl.websocket;
 
 import org.springframework.stereotype.Component;
 

@@ -42,6 +42,7 @@ public class OrderController {
 
     /**
      * 订单支付
+     *  TODO: websocket 双向通信
      */
     @PutMapping("/payment")
     @ApiModelProperty("订单支付")
