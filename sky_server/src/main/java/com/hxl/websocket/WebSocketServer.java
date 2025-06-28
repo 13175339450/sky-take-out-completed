@@ -2,28 +2,28 @@ package com.hxl.websocket;
 
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * WebSocket服务
+ * WebSocket服务端点
+ * 处理客户端连接、消息收发和断开逻辑
+ * 支持通过URL路径参数{sid}区分不同客户端
  */
 @Component
 @ServerEndpoint("/ws/{sid}")
 public class WebSocketServer {
 
-    //存放会话对象
-    private static Map<String, Session> sessionMap = new HashMap();
+    // 存储所有在线客户端的会话对象
+    private static final Map<String, Session> sessionMap = new HashMap<>();
 
     /**
-     * 连接建立成功调用的方法
+     * 客户端连接建立时触发
+     * @param session 客户端会话对象
+     * @param sid 客户端唯一标识
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("sid") String sid) {
@@ -32,9 +32,9 @@ public class WebSocketServer {
     }
 
     /**
-     * 收到客户端消息后调用的方法
-     *
-     * @param message 客户端发送过来的消息
+     * 收到客户端消息时触发
+     * @param message 客户端发送的文本消息
+     * @param sid 客户端唯一标识
      */
     @OnMessage
     public void onMessage(String message, @PathParam("sid") String sid) {
@@ -42,9 +42,8 @@ public class WebSocketServer {
     }
 
     /**
-     * 连接关闭调用的方法
-     *
-     * @param sid
+     * 客户端连接断开时触发
+     * @param sid 客户端唯一标识
      */
     @OnClose
     public void onClose(@PathParam("sid") String sid) {
@@ -53,20 +52,16 @@ public class WebSocketServer {
     }
 
     /**
-     * 群发 (服务端的功能 没有加注解)
-     *
-     * @param message
+     * 向所有在线客户端群发消息
+     * @param message 需要发送的文本消息
      */
     public void sendToAllClient(String message) {
-        Collection<Session> sessions = sessionMap.values();
-        for (Session session : sessions) {
+        for (Session session : sessionMap.values()) {
             try {
-                //服务器向客户端发送消息
                 session.getBasicRemote().sendText(message);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
 }

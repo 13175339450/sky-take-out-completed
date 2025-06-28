@@ -5,11 +5,14 @@ import com.hxl.dto.OrderSearchDTO;
 import com.hxl.entity.Orders;
 import com.hxl.vo.OrderStatisticsVO;
 import com.hxl.vo.OrderVO;
+import com.hxl.vo.SalesTop10;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface OrderMapper {
     /**
@@ -88,4 +91,25 @@ public interface OrderMapper {
      */
     @Select("select id from orders where status = #{status}")
     List<Long> queryDeliveryOrder(Integer status);
+
+    /**
+     * 统计营业额
+     * @param map 封装统计相关的条件信息
+     * @return 返回该时间区间内 已完成订单的营业额总数
+     */
+    BigDecimal turnoverStatistics(Map map);
+
+    /**
+     * 查询指定条件下的订单数
+     * @param map 订单的条件
+     * @return 返回订单数
+     */
+    Integer getOrderCount(Map map);
+
+    /**
+     * 查询销量排名top10的商品
+     * @param map 商品的查询条件封装的类
+     * @return 返回销量排名前十的商品相关数据
+     */
+    List<SalesTop10> top10(Map map);
 }

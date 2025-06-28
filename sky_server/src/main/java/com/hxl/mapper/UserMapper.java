@@ -3,6 +3,8 @@ package com.hxl.mapper;
 import com.hxl.entity.User;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Map;
+
 public interface UserMapper {
     /**
      * 根据openid查询user表里是否存在该用户
@@ -26,4 +28,11 @@ public interface UserMapper {
      */
     @Select("select * from user where id = #{userId}")
     User queryUserById(Long userId);
+
+    /**
+     * 统计每个时间区间内的新增用户数
+     * @param map 条件
+     * @return 返回新增用户数
+     */
+    Integer userStatistics(Map map);
 }
