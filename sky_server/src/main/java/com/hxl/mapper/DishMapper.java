@@ -5,10 +5,12 @@ import com.hxl.annotation.AutoFill;
 import com.hxl.dto.DishPageDTO;
 import com.hxl.entity.Dish;
 import com.hxl.enumeration.OperationType;
+import com.hxl.vo.DishOverViewVO;
 import com.hxl.vo.DishPageVO;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DishMapper {
     /**
@@ -60,4 +62,11 @@ public interface DishMapper {
      * @param ids 菜品id
      */
     void deleteDishBatch(List<Long> ids);
+
+    /**
+     * 查询菜品总览
+     * @param map
+     * @return
+     */
+    DishOverViewVO overviewDishes(Map map);
 }

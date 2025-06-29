@@ -23,6 +23,10 @@
     </parent>
 
     <properties>
+        <!-- 环境变量控制 -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+
         <spring.mybatis.version>2.2.0</spring.mybatis.version>
         <lombok.version>1.18.20</lombok.version>
         <fastjson.version>1.2.76</fastjson.version>
@@ -145,5 +149,21 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <!-- 移除冗余的source/target配置 -->
+                    <verbose>true</verbose>
+                    <!-- 显式指定编译器版本 -->
+                    <release>17</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

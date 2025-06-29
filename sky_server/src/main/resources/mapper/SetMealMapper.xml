@@ -88,4 +88,10 @@
             </foreach>
     </delete>
 
+    <!-- 查询套餐总览信息 -->
+    <select id="overviewSetMeals" resultType="com.hxl.vo.SetMealOverViewVO">
+        select sum(if(status = #{discontinued}, 1, 0)) as discontinued,
+               sum(if(status = #{sold}, 1, 0)) as sold
+        from set_meal
+    </select>
 </mapper>

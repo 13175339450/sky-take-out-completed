@@ -3,6 +3,7 @@ package com.hxl.mapper;
 import com.github.pagehelper.Page;
 import com.hxl.dto.OrderSearchDTO;
 import com.hxl.entity.Orders;
+import com.hxl.vo.OrderOverViewVO;
 import com.hxl.vo.OrderStatisticsVO;
 import com.hxl.vo.OrderVO;
 import com.hxl.vo.SalesTop10;
@@ -112,4 +113,11 @@ public interface OrderMapper {
      * @return 返回销量排名前十的商品相关数据
      */
     List<SalesTop10> top10(Map map);
+
+    /**
+     * 订单管理
+     * @param map 封装查询的几个条件
+     * @return 订单查询的内容
+     */
+    OrderOverViewVO overviewOrders(Map map);
 }

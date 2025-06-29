@@ -4,11 +4,13 @@ import com.github.pagehelper.Page;
 import com.hxl.annotation.AutoFill;
 import com.hxl.entity.SetMeal;
 import com.hxl.enumeration.OperationType;
+import com.hxl.vo.SetMealOverViewVO;
 import com.hxl.vo.SetMealPageVO;
 import com.hxl.vo.SetMealVO;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SetMealMapper {
     /**
@@ -77,4 +79,11 @@ public interface SetMealMapper {
      */
     @Select("select * from set_meal where id = #{setmealId}")
     SetMeal querySetMealInfoById(Long setmealId);
+
+    /**
+     * 查询套餐总览
+     * @param map 查询条件封装
+     * @return 返回套餐总览信息
+     */
+    SetMealOverViewVO overviewSetMeals(Map map);
 }

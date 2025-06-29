@@ -94,4 +94,11 @@
             #{id}
         </foreach>
     </delete>
+
+    <!-- 查询菜品总览 -->
+    <select id="overviewDishes" resultType="com.hxl.vo.DishOverViewVO">
+        select sum(if(status = #{discontinued}, 1, 0)) as discontinued,
+               sum(if(status = #{sold}, 1, 0)) as sold
+        from dish
+    </select>
 </mapper>

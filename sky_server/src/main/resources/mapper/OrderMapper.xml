@@ -190,4 +190,15 @@
         order by sum(od.number) desc
         limit 0, 10
     </select>
+
+    <!-- 利用聚合函数查询相关订单管理的信息 -->
+    <select id="overviewOrders" resultType="com.hxl.vo.OrderOverViewVO">
+        select sum(if(status = #{cancelled}, 1, 0)) as cancelledOrders,
+        sum(if(status = #{completed}, 1, 0)) as completedOrders,
+        sum(if(status = #{delivered}, 1, 0)) as deliveredOrders,
+        sum(if(status = #{waiting}, 1, 0)) as waitingOrders,
+        sum(if(status = #{all}, 0, 1)) as allOrders
+        from orders
+        where order_time &gt;= #{begin} and order_time &lt;= #{end}
+    </select>
 </mapper>

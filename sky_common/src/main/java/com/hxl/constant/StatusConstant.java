@@ -26,4 +26,12 @@ public class StatusConstant {
     public static final Integer PAY_WECHAT = 1;
 
     public static final Integer PAY_ALI = 2;
+
+    //已停售菜品状态
+    public static final Integer DISCONTINUED = 0;
+
+    //已起售菜品数量
+    public static final Integer SOLD = 1;
+
+
 }

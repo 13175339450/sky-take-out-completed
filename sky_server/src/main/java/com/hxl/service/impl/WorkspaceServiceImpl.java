@@ -1,10 +1,17 @@
 package com.hxl.service.impl;
 
+import com.hxl.constant.StatusConstant;
 import com.hxl.entity.Orders;
+import com.hxl.entity.SetMeal;
+import com.hxl.mapper.DishMapper;
 import com.hxl.mapper.OrderMapper;
+import com.hxl.mapper.SetMealMapper;
 import com.hxl.mapper.UserMapper;
 import com.hxl.service.WorkspaceService;
 import com.hxl.vo.BusinessDataVO;
+import com.hxl.vo.DishOverViewVO;
+import com.hxl.vo.OrderOverViewVO;
+import com.hxl.vo.SetMealOverViewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +30,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private DishMapper dishMapper;
+
+    @Autowired
+    private SetMealMapper setMealMapper;
+
     /**
      * 查询今日运营数据
      */
@@ -57,5 +71,53 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Integer newUsers = userMapper.userStatistics(map);
 
         return new BusinessDataVO(newUsers, orderCompletionRate, turnover, unitPrice, validOrderCount);
+    }
+
+    /**
+     * 查询订单管理数据
+     */
+    @Override
+    public OrderOverViewVO overviewOrders() {
+        //获取今日的开始时间和结束时间
+        LocalDateTime begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+        //使用sql聚合查询
+        Map map = new HashMap<>();
+        map.put("begin", begin);//开始时间
+        map.put("end", end);//结束时间
+        map.put("all", null);//全部
+        map.put("cancelled", Orders.CANCELLED);//已取消
+        map.put("completed", Orders.COMPLETED);//已完成
+        map.put("delivered", Orders.CONFIRMED);//待派送 == 已接单
+        map.put("waiting", Orders.TO_BE_CONFIRMED);//待接单
+
+        return orderMapper.overviewOrders(map);
+    }
+
+    /**
+     * 查询菜品总览
+     */
+    @Override
+    public DishOverViewVO overviewDishes() {
+        //封装查询数据
+        Map map = new HashMap();
+        map.put("discontinued", StatusConstant.DISCONTINUED);//已停售状态
+        map.put("sold", StatusConstant.SOLD);//已起售状态
+
+        return dishMapper.overviewDishes(map);
+    }
+
+    /**
+     * 查询套餐总览
+     */
+    @Override
+    public SetMealOverViewVO overviewSetMeals() {
+        //封装查询条件
+        Map map = new HashMap();
+        map.put("discontinued", StatusConstant.DISCONTINUED);//已停售
+        map.put("sold", StatusConstant.SOLD);//已起售
+
+        return setMealMapper.overviewSetMeals(map);
     }
 }
