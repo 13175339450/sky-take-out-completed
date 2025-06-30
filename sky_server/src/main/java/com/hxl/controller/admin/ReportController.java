@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController("adminReportController")
@@ -85,11 +86,22 @@ public class ReportController {
     public Result<SalesTop10ReportVO> top10(
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end
-    ){
+    ) {
         log.info("查询销量排名top10: {}, {}", begin, end);
 
         SalesTop10ReportVO vo = reportService.top10(begin, end);
 
         return Result.success(vo);
+    }
+
+    /**
+     * 导出Excel报表
+     */
+    @GetMapping("/export")
+    @ApiOperation("导出Excel报表接口")
+    public void export(HttpServletResponse response){
+        log.info("导出Excel报表");
+
+        reportService.export(response);
     }
 }

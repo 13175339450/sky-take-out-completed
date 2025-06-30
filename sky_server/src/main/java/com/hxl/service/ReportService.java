@@ -5,6 +5,7 @@ import com.hxl.vo.SalesTop10ReportVO;
 import com.hxl.vo.TurnoverReportVO;
 import com.hxl.vo.UserReportVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 public interface ReportService {
@@ -39,4 +40,9 @@ public interface ReportService {
      * @return 返回排名top10的数据
      */
     SalesTop10ReportVO top10(LocalDate begin, LocalDate end);
+
+    /**
+     * Excel报表接口
+     */
+    void export(HttpServletResponse response);
 }

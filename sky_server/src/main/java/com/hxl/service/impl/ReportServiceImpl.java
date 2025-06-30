@@ -4,13 +4,21 @@ import com.hxl.entity.Orders;
 import com.hxl.mapper.OrderMapper;
 import com.hxl.mapper.UserMapper;
 import com.hxl.service.ReportService;
+import com.hxl.service.WorkspaceService;
 import com.hxl.utils.ReportUtil;
 import com.hxl.vo.*;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +37,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private WorkspaceService workspaceService;
 
     /**
      * 营业额统计
@@ -187,5 +198,68 @@ public class ReportServiceImpl implements ReportService {
 
         //结果返回
         return new SalesTop10ReportVO(nameList, numberList);
+    }
+
+    /**
+     * 导出excel报表接口
+     */
+    @Override
+    public void export(HttpServletResponse response) {
+        //获取最近30天的营业数据
+        LocalDate begin = LocalDate.now().minusDays(30);//减30天时间
+        LocalDate end = LocalDate.now().minusDays(1);//减去1天时间
+
+        LocalDateTime beginning = LocalDateTime.of(begin, LocalTime.MIN);
+        LocalDateTime ending = LocalDateTime.of(end, LocalTime.MAX);
+
+        //查询 数据统计的相关信息 调用 Service层的接口函数
+        BusinessDataVO businessDataVO = workspaceService.businessData(beginning, ending);
+
+        //将数据通过poi写入到Excel文件里
+        //获取当前类路径下的Excel文件 的输入流
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("excel/运营数据报表模板.xlsx");
+
+
+        try {
+            //基于模板文件创建一个新的Excel文件
+            XSSFWorkbook excel = new XSSFWorkbook(in);
+            //获取表格文件的Sheet文件
+            XSSFSheet sheet = excel.getSheet("Sheet1");
+            //填充数据--时间
+            sheet.getRow(1).getCell(1).setCellValue("时间：" + begin + "至" + end);
+            //获得第4行
+            XSSFRow row = sheet.getRow(3);
+            row.getCell(2).setCellValue(businessDataVO.getTurnover().toString()); //第3个单元格
+            row.getCell(4).setCellValue(businessDataVO.getOrderCompletionRate());
+            row.getCell(6).setCellValue(businessDataVO.getNewUsers());
+            //获得第5行
+            row = sheet.getRow(4);
+            row.getCell(2).setCellValue(businessDataVO.getValidOrderCount());
+            row.getCell(4).setCellValue(businessDataVO.getUnitPrice());
+            //填充明细数据
+            for (int i = 0; i < 30; i++) {
+                LocalDate date = begin.plusDays(i);
+                //查询某一天的营业数据
+                businessDataVO = workspaceService.businessData(LocalDateTime.of(date, LocalTime.MIN), LocalDateTime.of(date, LocalTime.MAX));
+                //获得某一行
+                row = sheet.getRow(7 + i);
+                row.getCell(1).setCellValue(date.toString());
+                row.getCell(2).setCellValue(businessDataVO.getTurnover().toString());
+                row.getCell(3).setCellValue(businessDataVO.getValidOrderCount());
+                row.getCell(4).setCellValue(businessDataVO.getOrderCompletionRate());
+                row.getCell(5).setCellValue(businessDataVO.getUnitPrice());
+                row.getCell(6).setCellValue(businessDataVO.getNewUsers());
+            }
+            //3.通过输出流将Excel文件下载到客户端浏览器
+            ServletOutputStream out = response.getOutputStream();
+            excel.write(out);
+            //关闭资源
+            out.close();
+            excel.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 }
