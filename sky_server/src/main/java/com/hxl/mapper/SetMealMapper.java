@@ -86,4 +86,9 @@ public interface SetMealMapper {
      * @return 返回套餐总览信息
      */
     SetMealOverViewVO overviewSetMeals(Map map);
+
+    /**
+     * 动态查询SetMeal
+     */
+    List<SetMeal> querySetMeal(SetMeal setMeal);
 }

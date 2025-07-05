@@ -3,6 +3,7 @@ package com.hxl.controller.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.BloomFilter;
 import com.hxl.constant.RedisNameConstant;
 import com.hxl.result.Result;
 import com.hxl.service.DishService;
@@ -37,6 +38,9 @@ public class DishController {
     @Autowired
     private RedisCacheUtil redisCacheUtil;
 
+    @Autowired
+    private BloomFilter<String> bloomFilter;
+
     /**
      * 根据categoryId查询菜品信息 (展示起售的菜品)
      *    左侧栏所对应的菜品
@@ -46,28 +50,14 @@ public class DishController {
     public Result<List<DishVO>> queryDishByCategoryId(Long categoryId){
         log.info("根据categoryId查询菜品信息: {}", categoryId);
 
-//        String key = RedisNameConstant.DISH_CACHE + categoryId;
-//        //判断redis里有没有缓存
-//        String json = stringRedisTemplate.opsForValue().get(key);
-//        //存在这个缓存key值
-//        if (json != null){
-//            //获取缓存
-//            try {
-//                vo = objectMapper.readValue(json, new TypeReference<List<DishVO>>() {
-//                });
-//                log.info("从redis里读取菜品缓存:key为 {}", key);
-//                //直接返回
-//                return Result.success(vo);
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
+        String key = RedisNameConstant.DISH_CACHE + "::" + categoryId;
 
         List<DishVO> vo = null;
-        //在下面方法里进行SpringCache
-        vo = dishService.queryDishAndFlavorsByCategoryId(categoryId);
-        //添加进redis
-//        redisCacheUtil.addCache(key, vo);
+        //TODO：布隆过滤器
+        if (bloomFilter.mightContain(key)){
+            //在下面方法里进行SpringCache
+            vo = dishService.queryDishAndFlavorsByCategoryId(categoryId);
+        }
 
         return Result.success(vo);
     }

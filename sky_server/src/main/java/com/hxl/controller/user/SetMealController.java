@@ -3,6 +3,7 @@ package com.hxl.controller.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.BloomFilter;
 import com.hxl.constant.RedisNameConstant;
 import com.hxl.entity.SetMeal;
 import com.hxl.result.Result;
@@ -44,6 +45,9 @@ public class SetMealController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private BloomFilter<String> bloomFilter;
+
 
     /**
      * 根据分类id查询套餐
@@ -53,32 +57,14 @@ public class SetMealController {
     public Result<List<SetMeal>> querySetMealByCategoryId(Long categoryId) {
         log.info("根据分类id查询套餐: {}", categoryId);
 
-//        String key = RedisNameConstant.SET_MEAL_CACHE + categoryId;
-//
-//        //查看redis里有没有缓存
-//        String json = stringRedisTemplate.opsForValue().get(key);
-//
-//        //查到缓存
-//        if (json != null){
-//            //将json转换为实体对象
-//            try {
-//                vo = objectMapper.readValue(json, new TypeReference<List<SetMeal>>() {
-//                });
-//                log.info("从redis里读取套餐缓存:key为 {}", key);
-//                //直接返回
-//                return Result.success(vo);
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-
         //查询起售中的套餐
         List<SetMeal> vo = null;
-        //SpringCache
-        vo = setMealService.querySetMealByCategoryId(categoryId);
+        String key = RedisNameConstant.SET_MEAL_CACHE + "::" + categoryId;
 
-        //加入redis
-//        redisCacheUtil.addCache(key, vo);
+        if (bloomFilter.mightContain(key)){
+            //SpringCache
+            vo = setMealService.querySetMealByCategoryId(categoryId);
+        }
 
         return Result.success(vo);
     }

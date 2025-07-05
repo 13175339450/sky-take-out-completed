@@ -26,6 +26,11 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
         <!-- Web开发依赖，包含Spring MVC、Tomcat等 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
