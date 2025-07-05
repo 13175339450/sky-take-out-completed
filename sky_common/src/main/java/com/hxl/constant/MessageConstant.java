@@ -45,4 +45,6 @@ public class MessageConstant {
     public static final String PAY_TIME_OUT = "订单支付超时!";
 
     public static final String ORDER_NOT_EXIST = "订单不存在!";
+
+    public static final String BLOOM_FILTER_ADD_ERROR = "布隆过滤器加载异常!";
 }
