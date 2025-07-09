@@ -2,9 +2,9 @@ hxl:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: 123
     #其余配置分散
-    host: localhost
+    host: 192.168.154.128
     port: 3306
     database: sky_take_out
 

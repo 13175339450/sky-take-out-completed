@@ -44,6 +44,7 @@ public interface CategoryMapper {
      * 根据分类id查询分类的 售卖状态
      * @param id 分类id
      * @return 1表示启售中 0表示禁售中
+     * TODO：不需要加索引，因为id主键本来就是聚合索引
      */
     @Select("select status from category where id = #{id}")
     Integer queryStatus(Long id);

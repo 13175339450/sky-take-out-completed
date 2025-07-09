@@ -174,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 支付成功
+     * TODO：支付成功后，对订单的修改可以设置为异步操作
      */
     @Override
     public void paySuccess(String outTradeNo) {

@@ -10,10 +10,13 @@ import com.hxl.service.OrderService;
 import com.hxl.vo.OrderPaymentVO;
 import com.hxl.vo.OrderSubmitVO;
 import com.hxl.vo.OrderVO;
+import com.sun.xml.bind.v2.TODO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,10 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    //消息队列封装类
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 用户下单
@@ -49,10 +56,12 @@ public class OrderController {
     public Result<OrderPaymentVO> orderPayment(@RequestBody OrderPaymentDTO orderPaymentDTO) {
         log.info("订单支付: {}", orderPaymentDTO);
 
+        // TODO：模拟交易成功 解决下单成功提醒
         OrderPaymentVO vo = orderService.orderPayment(orderPaymentDTO);
 
-        //TODO：模拟交易成功 解决下单成功提醒
-        orderService.paySuccess(orderPaymentDTO.getOrderNumber());
+        // TODO: 支付成功后的 对订单的修改、以及WebSocket长连接相应 都可以进行异步处理
+//        orderService.paySuccess(orderPaymentDTO.getOrderNumber());
+        rabbitTemplate.convertAndSend("order.direct", "pay.success", orderPaymentDTO.getOrderNumber());
 
         log.info("生成预支付交易单：{}", vo);
         return Result.success(vo);

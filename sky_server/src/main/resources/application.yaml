@@ -19,9 +19,19 @@ logging:
 spring:
   profiles:
     #动态激活的yaml配置
-    active: dev, aliOssInfo, redisInfo, weChatInfo
+    active: dev, aliOssInfo, redisInfo, weChatInfo, rabbitMQInfo
   main:
     allow-circular-references: true
+  #rabbitMQ消息队列的配置
+  rabbitmq:
+    host: 192.168.154.128 # 你的虚拟机IP
+    port: 5672 # 端口
+    virtual-host: /sky # 虚拟主机
+    username: sky # 用户名
+    password: 123456 # 密码
+    listener:
+      direct:
+        prefetch: 1 #控制消费者预取消息的数量 1表示没执行完上一条消息之前只能取一条
 
   #配置连接池信息
   datasource:
