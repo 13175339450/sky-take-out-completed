@@ -6,6 +6,11 @@ package com.hxl.constant;
  *      2.
  */
 public class RedisNameConstant {
+    //Token前缀
+    public static final String EMPLOYEE_TOKEN_CACHE = "emp_token:";
+
+    public static final String CLIENT_TOKEN_CACHE = "client_token:";
+
     //店铺状态的前缀
     public static final String SHOP_STATUS = "shop-status";
 

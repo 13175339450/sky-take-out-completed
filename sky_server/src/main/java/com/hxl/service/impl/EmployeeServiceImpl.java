@@ -2,13 +2,10 @@ package com.hxl.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hxl.constant.*;
 import com.hxl.dto.EmployeeEditInfoDTO;
 import com.hxl.dto.EditPasswordDTO;
 import com.hxl.dto.EmployeeAddDTO;
-import com.hxl.constant.JwtClaimsConstant;
-import com.hxl.constant.MessageConstant;
-import com.hxl.constant.PasswordConstant;
-import com.hxl.constant.StatusConstant;
 import com.hxl.dto.EmployeePageDTO;
 import com.hxl.entity.Employee;
 import com.hxl.exception.AccountLockStatusException;
@@ -23,12 +20,14 @@ import com.hxl.vo.EmployeeLoginVO;
 import com.hxl.vo.EmployeePageVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service //手动将类标记为 Spring Bean
 public class EmployeeServiceImpl implements EmployeeService {
@@ -39,6 +38,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     //注入Jwt校验的代理实现类
     @Autowired
     private JwtProperties jwtProperties;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
 
     /**
@@ -88,6 +90,16 @@ public class EmployeeServiceImpl implements EmployeeService {
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
                 claims);
+
+        // TODO: 将token存入Redis（新增代码）
+        String redisKey = RedisNameConstant.EMPLOYEE_TOKEN_CACHE + token;
+        long ttl = jwtProperties.getAdminTtl(); // 获取JWT有效期(毫秒)
+        stringRedisTemplate.opsForValue().set(
+                redisKey,//key值
+                employeeInfo.getId().toString(),//用户id
+                ttl,//过期时间 与token有效期一直
+                TimeUnit.MILLISECONDS//单位
+        );
 
         //结果返回
         return EmployeeLoginVO.builder()

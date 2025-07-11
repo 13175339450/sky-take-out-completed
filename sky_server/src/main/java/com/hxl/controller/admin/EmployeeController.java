@@ -1,5 +1,6 @@
 package com.hxl.controller.admin;
 
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.context.BaseContext;
 import com.hxl.dto.EmployeeEditInfoDTO;
 import com.hxl.dto.EditPasswordDTO;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("AdminEmployeeController")
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j //开启日志
 @Api(tags = "管理端的员工相关接口")
 public class EmployeeController {
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private EmployeeService employeeService;
@@ -43,7 +48,9 @@ public class EmployeeController {
      */
     @PostMapping("logout")
     @ApiOperation("退出登录")
-    public Result employeeLogout() {
+    public Result employeeLogout(@RequestHeader("token") String token) {
+        String redisKey = RedisNameConstant.EMPLOYEE_TOKEN_CACHE + token;
+        stringRedisTemplate.delete(redisKey);
         return Result.success();
     }
 
@@ -105,7 +112,7 @@ public class EmployeeController {
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询员工信息")
-    public Result<Employee> queryEmployeeInfoById(@PathVariable Long id){
+    public Result<Employee> queryEmployeeInfoById(@PathVariable Long id) {
         log.info("根据id查询员工信息: {}", id);
 
         Employee employee = employeeService.queryEmployeeInfoById(id);
@@ -118,7 +125,7 @@ public class EmployeeController {
      */
     @PutMapping
     @ApiOperation("编辑员工信息")
-    public Result editEmployeeInfo(@RequestBody EmployeeEditInfoDTO employeeEditInfoDTO){
+    public Result editEmployeeInfo(@RequestBody EmployeeEditInfoDTO employeeEditInfoDTO) {
         log.info("编辑员工信息: {}", employeeEditInfoDTO);
 
         employeeService.editEmployeeInfo(employeeEditInfoDTO);

@@ -1,5 +1,6 @@
 package com.hxl.controller.user;
 
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.dto.UserLoginDTO;
 import com.hxl.result.Result;
 import com.hxl.service.UserService;
@@ -8,10 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("userUserController")
 @RequestMapping("/user/user")
@@ -21,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 用户登录
@@ -40,7 +42,9 @@ public class UserController {
      */
     @PostMapping("/logout")
     @ApiOperation("用户退出登录")
-    public Result logout(){
+    public Result logout(@RequestHeader("token") String token){
+        String redisKey = RedisNameConstant.EMPLOYEE_TOKEN_CACHE + token;
+        stringRedisTemplate.delete(redisKey);
         return Result.success();
     }
 }

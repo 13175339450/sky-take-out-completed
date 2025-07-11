@@ -2,6 +2,7 @@ package com.hxl.interceptor;
 
 import com.hxl.constant.JwtClaimsConstant;
 import com.hxl.constant.MessageConstant;
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.context.BaseContext;
 import com.hxl.exception.TokenCheckException;
 import com.hxl.properties.JwtProperties;
@@ -9,6 +10,8 @@ import com.hxl.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 定义管理端的 jwt令牌校验拦截器
@@ -26,6 +30,9 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtProperties jwtProperties;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 执行 Handler方法前的 拦截器
@@ -51,6 +58,23 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
          */
         String token = request.getHeader(jwtProperties.getAdminTokenName());
 
+        //TODO：优先查缓存 设置try-catch 防止redis异常
+        String redisKey = RedisNameConstant.EMPLOYEE_TOKEN_CACHE + token;
+        try {
+            // 先尝试从Redis获取（新增代码）
+            String cachedId = stringRedisTemplate.opsForValue().get(redisKey);
+            if (cachedId != null) {
+                //将用户id 从String转换为Long
+                Long id = Long.parseLong(cachedId);
+                //存入ThreadLocal里
+                BaseContext.setCurrentId(id);
+                log.info("*************Redis验证成功，员工id: {}*****************", id);
+                return true; // 缓存存在直接放行
+            }
+        } catch (Exception e) {
+            log.info("Redis解析异常！继续JWT解析");
+        }
+
         //校验令牌
         try {
             log.info("jwt令牌校验: {}", token);
@@ -60,20 +84,17 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             //获取解密后的 id 员工id
             Long id = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
 
+            // TODO: 解析成功后将token重新存入Redis（新增代码）
+            stringRedisTemplate.opsForValue().set(
+                    redisKey,
+                    id.toString(),
+                    jwtProperties.getAdminTtl(),
+                    TimeUnit.MILLISECONDS
+            );
+
             log.info("验证成功");
             //TODO: 通过ThreadLocal 将 id 传递给service层 调用封装的工具类
             BaseContext.setCurrentId(id);
-
-            // 手动验证 token 有效期
-//            Date expiration = claims.getExpiration();
-//            if (expiration == null) {
-//                //token缺少有效时间
-//                throw new TokenCheckException(MessageConstant.TOKEN_LACK_TIME);
-//            }
-//            if (new Date().after(expiration)) {
-//                //token已过期
-//                throw new TokenCheckException(MessageConstant.TOKEN_OUT_OF_DATE);
-//            }
 
             log.info("当前员工id: {}", id);
             //token有效 放行

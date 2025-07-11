@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hxl.constant.JwtClaimsConstant;
 import com.hxl.constant.MessageConstant;
+import com.hxl.constant.RedisNameConstant;
 import com.hxl.constant.WeChatConstant;
 import com.hxl.entity.User;
 import com.hxl.exception.LoginFailException;
@@ -15,11 +16,13 @@ import com.hxl.utils.HttpClientUtil;
 import com.hxl.utils.JwtUtil;
 import com.hxl.vo.UserLoginVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     //微信服务接口地址
     public static final String WX_LOGIN="http://api.weixin.qq.com/sns/jscode2session";
@@ -91,6 +97,16 @@ public class UserServiceImpl implements UserService {
         claims.put(JwtClaimsConstant.USER_ID, user.getId());
         //5.2利用 SecretKey + Ttl + userId通过算法组合成 token
         String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+
+        // TODO: 将token存入Redis（新增代码）
+        String redisKey = RedisNameConstant.CLIENT_TOKEN_CACHE + token;
+        long ttl = jwtProperties.getAdminTtl(); // 获取JWT有效期(毫秒)
+        stringRedisTemplate.opsForValue().set(
+                redisKey,//key值
+                user.getId().toString(),//用户id
+                ttl,//过期时间 与token有效期一直
+                TimeUnit.MILLISECONDS//单位
+        );
 
         //6.将结果进行封装
         return UserLoginVO.builder()
